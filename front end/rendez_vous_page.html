@@ -1,0 +1,319 @@
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+.dash{display:flex;min-height:700px;background:var(--color-background-tertiary);font-family:var(--font-sans);}
+.sidebar{width:200px;min-width:200px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:20px 0;}
+.logo{padding:0 16px 20px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:14px;}
+.logo-name{font-size:14px;font-weight:500;color:#1D9E75;}
+.logo-sub{font-size:10px;color:var(--color-text-secondary);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:var(--color-text-secondary);cursor:pointer;border-radius:6px;margin:1px 8px;}
+.nav-item.active{background:#e8f8f3;color:#0F6E56;font-weight:500;}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;}
+.sidebar-bottom{margin-top:auto;border-top:0.5px solid var(--color-border-tertiary);padding-top:12px;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 24px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);}
+.search-box{flex:1;max-width:360px;display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 12px;}
+.search-box input{border:none;background:transparent;font-size:13px;color:var(--color-text-primary);outline:none;width:100%;}
+.search-box input::placeholder{color:var(--color-text-secondary);}
+.icon-btn{width:32px;height:32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);margin-left:auto;}
+.user-block{display:flex;align-items:center;gap:8px;}
+.user-info{text-align:right;}
+.user-name{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.user-role{font-size:10px;color:var(--color-text-secondary);}
+.avatar{width:32px;height:32px;border-radius:50%;background:#0F6E56;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff;}
+.content{padding:24px;flex:1;}
+.page-header{margin-bottom:20px;}
+.page-title{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-top:3px;}
+.filters{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.filter-group{display:flex;flex-direction:column;gap:4px;}
+.filter-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-secondary);}
+.filter-select{display:flex;align-items:center;gap:6px;padding:6px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-primary);cursor:pointer;min-width:140px;}
+.filter-date{display:flex;align-items:center;gap:6px;padding:6px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-secondary);cursor:pointer;}
+.filter-icon{margin-left:auto;}
+.table-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:10px 16px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-secondary);font-weight:500;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);}
+tbody tr{border-bottom:0.5px solid var(--color-border-tertiary);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:12px 16px;font-size:13px;color:var(--color-text-primary);vertical-align:middle;}
+.user-cell{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--color-text-secondary);flex-shrink:0;overflow:hidden;}
+.user-main{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.user-pet{font-size:11px;color:#1D9E75;}
+.species{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--color-text-secondary);}
+.vet-cell{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-text-secondary);}
+.vet-icon{width:22px;height:22px;border-radius:50%;background:#e8f8f3;display:flex;align-items:center;justify-content:center;}
+.date-main{font-size:13px;color:var(--color-text-primary);}
+.date-time{font-size:11px;color:var(--color-text-secondary);}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.badge-green{background:#e8f8f3;color:#0F6E56;}
+.badge-amber{background:#FEF3C7;color:#854F0B;}
+.badge-red{background:#FCEBEB;color:#A32D2D;}
+.actions{display:flex;align-items:center;gap:6px;}
+.act-btn{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--color-border-tertiary);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);}
+.act-btn.red{color:#A32D2D;border-color:#F7C1C1;}
+.act-btn.green{color:#0F6E56;border-color:#9FE1CB;}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:0.5px solid var(--color-border-tertiary);margin-top:0;}
+.pag-info{font-size:12px;color:var(--color-text-secondary);}
+.pag-btns{display:flex;align-items:center;gap:4px;}
+.pag-btn{width:30px;height:30px;border-radius:6px;border:0.5px solid var(--color-border-tertiary);background:transparent;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);}
+.pag-btn.active{background:#1D9E75;color:#fff;border-color:#1D9E75;}
+.fab{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+</style>
+
+<div class="dash">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-name">PetCare Admin</div>
+      <div class="logo-sub">Soins Vétérinaires</div>
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Tableau de bord
+    </div>
+    <div class="nav-item active">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+      Rendez-vous
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M10 2h4M12 0v4"/></svg>
+      Vétérinaires
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><circle cx="12" cy="5" r="2.5"/><path d="M1 14c0-2.8 2.2-5 5-5s5 2.2 5 5"/><path d="M14 14c0-1.7-1.3-3-3-3"/></svg>
+      Administrateurs
+    </div>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v5M8 5v.5"/></svg>
+        Support
+      </div>
+      <div class="nav-item" style="color:#A32D2D;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 8H2M6 5l-3 3 3 3"/><path d="M11 4v-1a1 1 0 011-1h1a1 1 0 011 1v8a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1"/></svg>
+        Déconnexion
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+        <input type="text" placeholder="Rechercher des rendez-vous, des animaux ou des clients..."/>
+      </div>
+      <div class="icon-btn" style="margin-left:8px;">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5a5 5 0 00-5 5v3l-1.5 2h13l-1.5-2V6.5a5 5 0 00-5-5z"/><path d="M6.5 13.5a1.5 1.5 0 003 0"/></svg>
+      </div>
+      <div class="icon-btn">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M6 6c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2v2M8 12v.5"/></svg>
+      </div>
+      <div class="user-block" style="margin-left:4px;">
+        <div class="user-info">
+          <div class="user-name">Utilisateur Admin</div>
+          <div class="user-role">Gestionnaire de Clinique</div>
+        </div>
+        <div class="avatar">UA</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+        <div class="page-header" style="margin:0;">
+          <div class="page-title">Gérer les Rendez-vous</div>
+          <div class="page-sub">Consulter et organiser les prochaines consultations de santé animale.</div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-end;">
+          <div class="filter-group">
+            <div class="filter-label">Filtrer par statut</div>
+            <div class="filter-select">
+              Tous les statuts
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-left:auto;"><path d="M4 6l4 4 4-4"/></svg>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Période</div>
+            <div class="filter-date">
+              mm/dd/yyyy
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-left:8px;"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+            </div>
+          </div>
+          <div class="act-btn" style="width:32px;height:32px;border:0.5px solid var(--color-border-tertiary);">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Utilisateur & Animal</th>
+              <th>Espèce</th>
+              <th>Vétérinaire</th>
+              <th>Date & Heure</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" style="background:#fde8e8;color:#A32D2D;">SM</div>
+                  <div>
+                    <div class="user-main">Sarah Mitchell</div>
+                    <div class="user-pet">Luna</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="species">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C7 2 4 6 4 10c0 3 1.5 5.5 4 7v3h8v-3c2.5-1.5 4-4 4-7 0-4-3-8-8-8z"/></svg>
+                  Chat
+                </div>
+              </td>
+              <td>
+                <div class="vet-cell">
+                  <div class="vet-icon"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#1D9E75" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+                  Dr. Aris Thorne
+                </div>
+              </td>
+              <td>
+                <div class="date-main">Oct 24, 2023</div>
+                <div class="date-time">10:30 AM</div>
+              </td>
+              <td><span class="badge badge-green">Confirmé</span></td>
+              <td>
+                <div class="actions">
+                  <div class="act-btn green"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5 8l2 2 4-4"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn red"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10"/></svg></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" style="background:#e8f0fe;color:#185FA5;">JW</div>
+                  <div>
+                    <div class="user-main">James Wilson</div>
+                    <div class="user-pet">Buster</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="species">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 18c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                  Chien
+                </div>
+              </td>
+              <td>
+                <div class="vet-cell">
+                  <div class="vet-icon"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#1D9E75" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+                  Dr. Elena Ross
+                </div>
+              </td>
+              <td>
+                <div class="date-main">Oct 25, 2023</div>
+                <div class="date-time">02:15 PM</div>
+              </td>
+              <td><span class="badge badge-amber">En attente</span></td>
+              <td>
+                <div class="actions">
+                  <div class="act-btn" style="color:var(--color-text-secondary);"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5 8l2 2 4-4"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn red"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10"/></svg></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" style="background:#f0fde8;color:#3B6D11;">MG</div>
+                  <div>
+                    <div class="user-main">Maria Garcia</div>
+                    <div class="user-pet">Oliver</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="species">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C7 2 4 6 4 10c0 3 1.5 5.5 4 7v3h8v-3c2.5-1.5 4-4 4-7 0-4-3-8-8-8z"/></svg>
+                  Chat
+                </div>
+              </td>
+              <td>
+                <div class="vet-cell">
+                  <div class="vet-icon"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#1D9E75" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+                  Dr. Aris Thorne
+                </div>
+              </td>
+              <td>
+                <div class="date-main">Oct 26, 2023</div>
+                <div class="date-time">09:00 AM</div>
+              </td>
+              <td><span class="badge badge-red">Annulé</span></td>
+              <td>
+                <div class="actions">
+                  <div class="act-btn" style="color:var(--color-text-secondary);opacity:0.4;"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5 8l2 2 4-4"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn red"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10"/></svg></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" style="background:#faeeda;color:#854F0B;">RC</div>
+                  <div>
+                    <div class="user-main">Robert Chen</div>
+                    <div class="user-pet">Mochi</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="species">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 18c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                  Chien
+                </div>
+              </td>
+              <td>
+                <div class="vet-cell">
+                  <div class="vet-icon"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#1D9E75" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
+                  Dr. Elena Ross
+                </div>
+              </td>
+              <td>
+                <div class="date-main">Oct 27, 2023</div>
+                <div class="date-time">11:45 AM</div>
+              </td>
+              <td><span class="badge badge-green">Confirmé</span></td>
+              <td>
+                <div class="actions">
+                  <div class="act-btn green"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5 8l2 2 4-4"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn red"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10"/></svg></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="pag-info">Affichage de <strong>1–4</strong> sur <strong>24</strong> rendez-vous</div>
+          <div class="pag-btns">
+            <div class="pag-btn">‹</div>
+            <div class="pag-btn active">1</div>
+            <div class="pag-btn">2</div>
+            <div class="pag-btn">3</div>
+            <div class="pag-btn">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fab">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+</div>

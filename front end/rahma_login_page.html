@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetCare – Connexion Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #1a6b5a;
+    --green-accent: #2ab890;
+    --green-btn: #2bbf96;
+    --text-dark: #1a1a1a;
+    --text-muted: #777;
+    --white: #ffffff;
+    --border: #e0e0e0;
+    --input-focus: #2ab890;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 960px;
+    min-height: 580px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.13);
+  }
+
+  /* ── LEFT: image panel ── */
+  .left {
+    position: relative;
+    background: linear-gradient(160deg, #3a9e88 0%, #1a5a4a 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px;
+    overflow: hidden;
+    min-height: 100%;
+  }
+
+  /* Vet + dog illustration using SVG + CSS */
+  .left-image {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(30,100,80,0.55) 0%,
+      rgba(15,70,55,0.2) 40%,
+      rgba(10,50,40,0.75) 100%
+    );
+    z-index: 1;
+  }
+
+  /* SVG illustration of vet & dog */
+  .vet-illustration {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .left-logo {
+    position: relative;
+    z-index: 2;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .left-bottom {
+    position: relative;
+    z-index: 2;
+  }
+
+  .left-bottom h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .left-bottom p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    max-width: 280px;
+  }
+
+  /* ── RIGHT: form panel ── */
+  .right {
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 52px 52px 28px;
+  }
+
+  .form-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    animation: fadeUp 0.55s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+  }
+
+  .form-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* Input fields */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .input-plain {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-plain::placeholder { color: #b0b0b0; }
+
+  .input-plain:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(42,184,144,0.12);
+  }
+
+  /* Remember + forgot */
+  .row-mid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .remember input[type="checkbox"] {
+    accent-color: var(--green-accent);
+    width: 14px; height: 14px;
+  }
+
+  .forgot {
+    font-size: 13px;
+    color: var(--green-dark);
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .forgot:hover { opacity: 0.7; }
+
+  /* Submit button */
+  .btn-login {
+    width: 100%;
+    background: var(--green-btn);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-login:hover {
+    background: var(--green-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-login svg {
+    width: 18px; height: 18px;
+    stroke: white; fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .signup-link {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .signup-link a {
+    color: var(--green-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* Footer bar */
+  .footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 16px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--green-accent); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: #ccc;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- LEFT: illustrated panel -->
+  <div class="left">
+    <!-- SVG scene: vet with dog -->
+    <svg class="vet-illustration" viewBox="0 0 480 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <!-- Background teal wash -->
+      <rect width="480" height="600" fill="#2a8a72"/>
+      <!-- subtle gradient overlay -->
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3aaa88" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#0d4035" stop-opacity="0.95"/>
+        </linearGradient>
+        <radialGradient id="light" cx="50%" cy="30%" r="60%">
+          <stop offset="0%" stop-color="#60c8a8" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#0d4035" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="480" height="600" fill="url(#bg)"/>
+      <ellipse cx="240" cy="160" rx="260" ry="200" fill="url(#light)"/>
+
+      <!-- Vet body (scrubs) -->
+      <ellipse cx="200" cy="420" rx="80" ry="120" fill="#1e8a6e"/>
+      <!-- Vet torso detail -->
+      <rect x="155" y="310" width="90" height="130" rx="20" fill="#1e8a6e"/>
+      <!-- Collar/V-neck -->
+      <polygon points="200,310 185,340 200,355 215,340" fill="#166050"/>
+      <!-- Stethoscope -->
+      <path d="M170 320 Q150 360 155 390 Q158 410 175 415" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="176" cy="418" r="8" fill="#444"/>
+      <!-- Vet arms -->
+      <ellipse cx="145" cy="370" rx="22" ry="55" fill="#1e8a6e" transform="rotate(-10 145 370)"/>
+      <ellipse cx="258" cy="380" rx="22" ry="50" fill="#1e8a6e" transform="rotate(8 258 380)"/>
+      <!-- Hands -->
+      <ellipse cx="136" cy="418" rx="18" ry="14" fill="#d4a07a"/>
+      <ellipse cx="262" cy="424" rx="18" ry="14" fill="#d4a07a"/>
+
+      <!-- Vet head & neck -->
+      <rect x="175" y="270" width="50" height="44" rx="8" fill="#d4a07a"/>
+      <ellipse cx="200" cy="258" rx="44" ry="48" fill="#d4a07a"/>
+      <!-- Hair -->
+      <ellipse cx="200" cy="228" rx="44" ry="28" fill="#3a2010"/>
+      <ellipse cx="170" cy="248" rx="16" ry="28" fill="#3a2010"/>
+      <ellipse cx="230" cy="248" rx="16" ry="28" fill="#3a2010"/>
+      <!-- Face features -->
+      <ellipse cx="187" cy="255" rx="5" ry="6" fill="#2a1808"/>
+      <ellipse cx="213" cy="255" rx="5" ry="6" fill="#2a1808"/>
+      <path d="M190 272 Q200 280 210 272" stroke="#c08060" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- Nose -->
+      <ellipse cx="200" cy="265" rx="4" ry="3" fill="#c09070"/>
+
+      <!-- Dog (Pomeranian-ish) on lap -->
+      <!-- Dog body -->
+      <ellipse cx="200" cy="490" rx="60" ry="48" fill="#d4904a"/>
+      <!-- Dog chest fluff -->
+      <ellipse cx="200" cy="475" rx="44" ry="34" fill="#e8b070"/>
+      <!-- Dog head -->
+      <circle cx="200" cy="440" r="38" fill="#d4904a"/>
+      <!-- Ear left -->
+      <ellipse cx="172" cy="422" rx="16" ry="20" fill="#c07838" transform="rotate(-20 172 422)"/>
+      <!-- Ear right -->
+      <ellipse cx="228" cy="422" rx="16" ry="20" fill="#c07838" transform="rotate(20 228 422)"/>
+      <!-- Muzzle -->
+      <ellipse cx="200" cy="453" rx="20" ry="15" fill="#e8c090"/>
+      <!-- Nose -->
+      <ellipse cx="200" cy="446" rx="7" ry="5" fill="#1a0a00"/>
+      <ellipse cx="198" cy="444" rx="2" ry="2" fill="white" opacity="0.5"/>
+      <!-- Eyes -->
+      <circle cx="186" cy="436" r="5" fill="#1a0a00"/>
+      <circle cx="214" cy="436" r="5" fill="#1a0a00"/>
+      <circle cx="184" cy="434" r="2" fill="white" opacity="0.6"/>
+      <circle cx="212" cy="434" r="2" fill="white" opacity="0.6"/>
+      <!-- Tongue -->
+      <ellipse cx="200" cy="460" rx="9" ry="7" fill="#e05060"/>
+      <!-- Paws -->
+      <ellipse cx="155" cy="525" rx="22" ry="14" fill="#c07838"/>
+      <ellipse cx="245" cy="525" rx="22" ry="14" fill="#c07838"/>
+
+      <!-- Bottom dark overlay for text legibility -->
+      <rect x="0" y="460" width="480" height="140" fill="url(#bg)" opacity="0.6"/>
+    </svg>
+
+    <div class="left-image"></div>
+    <div class="left-logo">PetCare</div>
+    <div class="left-bottom">
+      <h2>L'excellence au service de la santé animale</h2>
+      <p>Gérez votre clinique vétérinaire avec une précision inégalée grâce à notre plateforme intelligente.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT: login form -->
+  <div class="right">
+    <div class="form-area">
+      <div>
+        <h2 class="form-title">Connexion</h2>
+        <p class="form-subtitle">Accédez à votre espace professionnel sécurisé.</p>
+      </div>
+
+      <div class="field">
+        <input type="email" class="input-plain" placeholder="Adresse e-mail">
+      </div>
+
+      <div class="field">
+        <input type="password" class="input-plain" placeholder="Mot de passe">
+      </div>
+
+      <div class="row-mid">
+        <label class="remember">
+          <input type="checkbox"> Rester connecté
+        </label>
+        <a href="#" class="forgot">Mot de passe oublié ?</a>
+      </div>
+
+      <button class="btn-login">
+        Se connecter
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+
+      <p class="signup-link">Nouveau sur PetCare ? <a href="#">Créer un compte</a></p>
+    </div>
+
+    <div class="footer-bar">
+      <div class="footer-links">
+        <a href="#">Confidentialité</a>
+        <a href="#">Conditions</a>
+        <a href="#">Aide</a>
+      </div>
+      <span class="footer-copy">© 2024 PetCare. Tous droits réservés.</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

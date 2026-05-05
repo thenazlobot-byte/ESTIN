@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetCare – Calendrier</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a7a6e;
+    --teal-light: #e8f5f3;
+    --teal-mid: #2a9d8f;
+    --text-dark: #1a2332;
+    --text-muted: #7a8898;
+    --border: #e2e8f0;
+    --bg: #f4f7f9;
+    --white: #ffffff;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(26,122,110,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { width: 200px; min-width: 200px; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 28px 0 24px; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10; }
+  .logo { padding: 0 24px 28px; border-bottom: 1px solid var(--border); }
+  .logo-name { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--teal); font-weight: 600; }
+  .logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; color: var(--text-muted); font-size: 13.5px; font-weight: 500; transition: all 0.2s; text-decoration: none; }
+  .nav-item:hover { background: var(--teal-light); color: var(--teal); }
+  .nav-item.active { background: var(--teal-light); color: var(--teal); }
+  .nav-bottom { padding: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+
+  /* MAIN */
+  .main { margin-left: 200px; flex: 1; padding: 32px 32px 40px; }
+
+  /* STEPPER */
+  .stepper { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
+  .step { display: flex; flex-direction: column; align-items: center; position: relative; min-width: 120px; }
+  .step:not(:last-child)::after { content: ''; position: absolute; top: 16px; left: calc(50% + 18px); width: calc(100% - 36px); height: 2px; background: var(--teal-mid); }
+  .step-circle { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-muted); background: var(--white); z-index: 1; }
+  .step.active .step-circle { background: var(--teal); border-color: var(--teal); color: white; box-shadow: 0 0 0 4px rgba(26,122,110,0.15); }
+  .step.done .step-circle { background: var(--teal-mid); border-color: var(--teal-mid); color: white; }
+  .step-label { font-size: 12px; color: var(--text-muted); margin-top: 7px; font-weight: 500; }
+  .step.active .step-label { color: var(--teal); font-weight: 600; }
+  .step.done .step-label { color: var(--teal-mid); }
+
+  /* LAYOUT */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 230px 1fr 240px;
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* CALENDAR */
+  .calendar-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .cal-month { font-size: 18px; font-weight: 700; color: var(--text-dark); }
+  .cal-nav { display: flex; gap: 6px; }
+  .cal-btn { width: 28px; height: 28px; border: 1.5px solid var(--border); border-radius: 7px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; }
+  .cal-btn:hover { border-color: var(--teal-mid); color: var(--teal); }
+
+  .cal-days-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 6px; }
+  .cal-day-name { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 4px 0; }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; color: var(--text-dark);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .cal-day:hover:not(.empty):not(.selected):not(.disabled) { background: var(--teal-light); color: var(--teal); }
+  .cal-day.selected { background: var(--teal); color: white; font-weight: 700; }
+  .cal-day.disabled { color: #cdd5db; cursor: default; }
+  .cal-day.empty { cursor: default; }
+
+  .cal-legend { display: flex; gap: 16px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .legend-dot.selected { background: var(--teal); }
+  .legend-dot.available { background: #b0c4c2; }
+
+  /* SLOTS */
+  .slots-col { display: flex; flex-direction: column; gap: 18px; }
+
+  .slots-section { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); padding: 18px 18px 14px; }
+  .slots-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; }
+
+  .slot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-dark);
+  }
+  .slot:last-child { margin-bottom: 0; }
+  .slot:hover:not(.full):not(.selected-slot) { border-color: var(--teal-mid); background: var(--teal-light); }
+  .slot.selected-slot { background: var(--teal); border-color: var(--teal); color: white; font-weight: 600; }
+  .slot.full { color: var(--text-muted); cursor: default; font-style: italic; }
+  .slot-badge-selected { font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 20px; }
+  .slot-badge-add { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--teal-mid); font-size: 16px; font-weight: 400; }
+  .slot-full-label { font-size: 12px; color: #b0bec5; }
+
+  /* BOTTOM INFO CARDS */
+  .bottom-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; grid-column: 1 / 3; }
+  .info-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); padding: 18px; }
+  .info-card-header { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+  .info-card-title { font-size: 13px; font-weight: 700; color: var(--teal); }
+  .info-card-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.7; }
+  .special-textarea {
+    width: 100%; min-height: 90px; resize: none;
+    border: 1.5px solid var(--border); border-radius: 9px;
+    padding: 11px 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--text-dark);
+    outline: none; transition: border-color 0.2s;
+    background: var(--bg);
+  }
+  .special-textarea::placeholder { color: #b0bec5; }
+  .special-textarea:focus { border-color: var(--teal-mid); background: white; }
+
+  /* SUMMARY CARD */
+  .summary-col { display: flex; flex-direction: column; gap: 0; }
+
+  .summary-header {
+    background: var(--teal);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 22px 20px 18px;
+    color: white;
+  }
+  .summary-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+  .summary-header p { font-size: 12.5px; opacity: 0.85; line-height: 1.5; }
+
+  .summary-body {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 18px 18px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .summary-pet { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .summary-pet-img { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; }
+  .summary-pet-name { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+  .summary-pet-breed { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .summary-items { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .summary-item { display: flex; align-items: flex-start; gap: 10px; }
+  .summary-item-icon { width: 28px; height: 28px; background: var(--teal-light); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: var(--teal); flex-shrink: 0; margin-top: 1px; }
+  .summary-item-label { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+  .summary-item-value { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
+  .summary-fees { border-top: 1px solid var(--border); padding-top: 16px; margin-bottom: 18px; }
+  .fee-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+  .fee-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; color: var(--text-dark); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .fee-total span:last-child { color: var(--teal); }
+
+  .btn-confirm {
+    width: 100%; background: var(--teal); color: white;
+    border: none; padding: 14px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+  .btn-confirm:hover { background: #155f55; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,122,110,0.3); }
+  .confirm-note { font-size: 10.5px; color: var(--text-muted); text-align: center; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-name">PetCare</div>
+    <div class="logo-sub">Pet Care Portal</div>
+  </div>
+  <nav class="nav">
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Accueil
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Mes Rendez-vous
+    </a>
+    <a href="#" class="nav-item active">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Réservations
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Paramètres
+    </a>
+  </nav>
+  <div class="nav-bottom">
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Support
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><path d="M9 20H5a2 2 0 01-2-2V6a2 2 0 012-2h4"/></svg>
+      Déconnexion
+    </a>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step done"><div class="step-circle">✓</div><span class="step-label">Choisir l'animal</span></div>
+    <div class="step done"><div class="step-circle">✓</div><span class="step-label">Service</span></div>
+    <div class="step done"><div class="step-circle">✓</div><span class="step-label">Vétérinaire</span></div>
+    <div class="step active"><div class="step-circle">4</div><span class="step-label">Calendrier</span></div>
+  </div>
+
+  <div class="content-grid">
+
+    <!-- CALENDAR -->
+    <div>
+      <div class="calendar-card">
+        <div class="cal-header">
+          <div class="cal-month">Octobre 2023</div>
+          <div class="cal-nav">
+            <button class="cal-btn">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="cal-btn">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="cal-days-header">
+          <div class="cal-day-name">Lu</div>
+          <div class="cal-day-name">Ma</div>
+          <div class="cal-day-name">Me</div>
+          <div class="cal-day-name">Je</div>
+          <div class="cal-day-name">Ve</div>
+          <div class="cal-day-name">Sa</div>
+          <div class="cal-day-name">Di</div>
+        </div>
+
+        <div class="cal-grid">
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day disabled">1</div>
+          <div class="cal-day disabled">2</div>
+          <div class="cal-day">3</div>
+          <div class="cal-day">4</div>
+          <div class="cal-day">5</div>
+          <div class="cal-day">6</div>
+          <div class="cal-day">7</div>
+          <div class="cal-day">8</div>
+          <div class="cal-day">9</div>
+          <div class="cal-day selected" id="day10">10</div>
+          <div class="cal-day">11</div>
+          <div class="cal-day">12</div>
+          <div class="cal-day">13</div>
+          <div class="cal-day">14</div>
+          <div class="cal-day">15</div>
+          <div class="cal-day">16</div>
+          <div class="cal-day">17</div>
+          <div class="cal-day">18</div>
+        </div>
+
+        <div class="cal-legend">
+          <div class="legend-item"><div class="legend-dot selected"></div> Sélectionné</div>
+          <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
+        </div>
+      </div>
+
+      <!-- Bottom info cards span below calendar + slots -->
+      <div style="margin-top:18px; display:flex; flex-direction:column; gap:14px;">
+        <div class="info-card">
+          <div class="info-card-header">
+            <svg width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span class="info-card-title">Politique de réservation</span>
+          </div>
+          <div class="info-card-body">Les annulations doivent être effectuées au moins 24 heures à l'avance pour recevoir un remboursement complet. Les urgences sont prioritaires et peuvent retarder légèrement votre rendez-vous.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLOTS + SPECIAL NOTE -->
+    <div class="slots-col">
+
+      <div class="slots-section">
+        <div class="slots-title">Séances du matin</div>
+        <div class="slot selected-slot" onclick="selectSlot(this)">
+          <span>09:00 – 10:00</span>
+          <span class="slot-badge-selected">Sélectionné</span>
+        </div>
+        <div class="slot" onclick="selectSlot(this)">
+          <span>10:00 – 11:00</span>
+          <div class="slot-badge-add">+</div>
+        </div>
+        <div class="slot full">
+          <span>11:00 – 12:00</span>
+          <span class="slot-full-label">Complet</span>
+        </div>
+      </div>
+
+      <div class="slots-section">
+        <div class="slots-title">Séances de l'après-midi</div>
+        <div class="slot" onclick="selectSlot(this)">
+          <span>14:00 – 15:00</span>
+          <div class="slot-badge-add">+</div>
+        </div>
+        <div class="slot" onclick="selectSlot(this)">
+          <span>15:00 – 16:00</span>
+          <div class="slot-badge-add">+</div>
+        </div>
+        <div class="slot" onclick="selectSlot(this)">
+          <span>16:00 – 17:00</span>
+          <div class="slot-badge-add">+</div>
+        </div>
+      </div>
+
+      <!-- Special instructions -->
+      <div class="info-card">
+        <div class="info-card-header">
+          <svg width="16" height="16" fill="none" stroke="var(--teal)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="info-card-title">Instructions spéciales</span>
+        </div>
+        <textarea class="special-textarea" placeholder="Ajoutez des préoccupations spécifiques concernant votre animal..."></textarea>
+      </div>
+
+    </div>
+
+    <!-- SUMMARY CARD -->
+    <div class="summary-col">
+      <div class="summary-header">
+        <h2>Résumé de la réservation</h2>
+        <p>Vérifiez les détails de votre rendez-vous</p>
+      </div>
+      <div class="summary-body">
+
+        <div class="summary-pet">
+          <img class="summary-pet-img" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop" alt="Luna">
+          <div>
+            <div class="summary-pet-name">Luna</div>
+            <div class="summary-pet-breed">Golden Retriever • 2 ans</div>
+          </div>
+        </div>
+
+        <div class="summary-items">
+          <div class="summary-item">
+            <div class="summary-item-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.5 12.5a7.5 7.5 0 1015 0 7.5 7.5 0 00-15 0z"/><path d="M9 12h6M12 9v6"/></svg>
+            </div>
+            <div>
+              <div class="summary-item-label">Golden Retriever • 2 ans</div>
+              <div class="summary-item-value">Bilan de santé général</div>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <div class="summary-item-label">Golden Retriever • 2 ans</div>
+              <div class="summary-item-value">Mardi 10 oct. 2023</div>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+            </div>
+            <div>
+              <div class="summary-item-label">Golden Retriever • 2 ans</div>
+              <div class="summary-item-value">09:00 – 10:00 (1 heure)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-fees">
+          <div class="fee-row"><span>Frais de consultation</span><span>4 500 DZD</span></div>
+          <div class="fee-row"><span>TVA de service</span><span>360 DZD</span></div>
+          <div class="fee-total"><span>Total</span><span>4 860 DZD</span></div>
+        </div>
+
+        <button class="btn-confirm">Confirmer la réservation</button>
+        <div class="confirm-note">En cliquant sur confirmer, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // Calendar day selection
+  document.querySelectorAll('.cal-day:not(.empty):not(.disabled)').forEach(d => {
+    d.addEventListener('click', () => {
+      document.querySelectorAll('.cal-day').forEach(x => x.classList.remove('selected'));
+      d.classList.add('selected');
+    });
+  });
+
+  // Slot selection
+  function selectSlot(el) {
+    if (el.classList.contains('full')) return;
+    document.querySelectorAll('.slot').forEach(s => {
+      s.classList.remove('selected-slot');
+      if (!s.classList.contains('full')) {
+        const existing = s.querySelector('.slot-badge-selected');
+        if (existing) existing.remove();
+        if (!s.querySelector('.slot-badge-add')) {
+          const plus = document.createElement('div');
+          plus.className = 'slot-badge-add';
+          plus.textContent = '+';
+          s.appendChild(plus);
+        }
+      }
+    });
+    el.classList.add('selected-slot');
+    const plus = el.querySelector('.slot-badge-add');
+    if (plus) plus.remove();
+    const badge = document.createElement('span');
+    badge.className = 'slot-badge-selected';
+    badge.textContent = 'Sélectionné';
+    el.appendChild(badge);
+  }
+</script>
+</body>
+</html>

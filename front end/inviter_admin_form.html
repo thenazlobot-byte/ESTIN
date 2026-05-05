@@ -1,0 +1,280 @@
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+.dash{display:flex;min-height:750px;background:var(--color-background-tertiary);font-family:var(--font-sans);}
+.sidebar{width:200px;min-width:200px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:20px 0;}
+.logo{padding:0 16px 20px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:14px;}
+.logo-name{font-size:14px;font-weight:500;color:#1D9E75;text-transform:uppercase;letter-spacing:0.04em;}
+.logo-sub{font-size:10px;color:var(--color-text-secondary);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:var(--color-text-secondary);cursor:pointer;border-radius:6px;margin:1px 8px;}
+.nav-item.active{background:#e8f8f3;color:#0F6E56;font-weight:500;}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;}
+.sidebar-bottom{margin-top:auto;border-top:0.5px solid var(--color-border-tertiary);padding-top:12px;}
+.main{flex:1;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 24px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);}
+.search-box{flex:1;max-width:360px;display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 12px;}
+.search-box input{border:none;background:transparent;font-size:13px;color:var(--color-text-primary);outline:none;width:100%;}
+.search-box input::placeholder{color:var(--color-text-secondary);}
+.icon-btn{width:32px;height:32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);}
+.user-block{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.user-info{text-align:right;}
+.user-name{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.user-role{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;}
+.uavatar{width:30px;height:30px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#fff;}
+.content{padding:24px;flex:1;}
+.breadcrumb{font-size:12px;color:var(--color-text-secondary);margin-bottom:14px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.breadcrumb span{color:var(--color-text-secondary);cursor:pointer;}
+.breadcrumb span.active{color:#1D9E75;font-weight:500;}
+.breadcrumb svg{color:var(--color-text-secondary);}
+.page-title{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:20px;max-width:480px;}
+.form-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:24px;margin-bottom:14px;}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.section-icon{width:38px;height:38px;border-radius:var(--border-radius-md);background:#e8f8f3;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.section-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.section-sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px;}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:12px;color:var(--color-text-secondary);font-weight:500;}
+.field input,.field select{width:100%;padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-primary);outline:none;}
+.field input::placeholder{color:var(--color-text-secondary);}
+.field input:focus,.field select:focus{border-color:#1D9E75;}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;cursor:pointer;}
+.role-row{margin-bottom:20px;}
+.role-select-wrap{max-width:260px;position:relative;}
+.permissions-section{margin-top:4px;}
+.perm-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+.perm-sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:16px;}
+.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.perm-item{display:flex;align-items:flex-start;gap:10px;padding:12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;}
+.perm-item.checked{border-color:#9FE1CB;background:#f0fdf9;}
+.checkbox{width:18px;height:18px;border-radius:4px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.checkbox.on{background:#1D9E75;border-color:#1D9E75;}
+.perm-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px;}
+.perm-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.5;}
+.form-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:0.5px solid var(--color-border-tertiary);}
+.btn-cancel{padding:8px 16px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:transparent;font-size:13px;color:var(--color-text-secondary);cursor:pointer;}
+.btn-submit{display:flex;align-items:center;gap:7px;padding:8px 18px;border:none;border-radius:var(--border-radius-md);background:#0F6E56;font-size:13px;color:#fff;cursor:pointer;font-weight:500;}
+.security-note{background:#f0fdf9;border:0.5px solid #9FE1CB;border-radius:var(--border-radius-lg);padding:14px 16px;display:flex;align-items:flex-start;gap:10px;}
+.security-text{font-size:12px;color:#0F6E56;line-height:1.6;}
+.security-text strong{font-weight:500;}
+</style>
+
+<div class="dash">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-name">PetCare Admin</div>
+      <div class="logo-sub">Veterinary Care</div>
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Tableau de bord
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+      Rendez-vous
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M10 2h4M12 0v4"/></svg>
+      Vétérinaires
+    </div>
+    <div class="nav-item active">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><circle cx="12" cy="5" r="2.5"/><path d="M1 14c0-2.8 2.2-5 5-5s5 2.2 5 5"/><path d="M14 14c0-1.7-1.3-3-3-3"/></svg>
+      Administrateurs
+    </div>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v5M8 5v.5"/></svg>
+        Support
+      </div>
+      <div class="nav-item" style="color:#A32D2D;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 8H2M6 5l-3 3 3 3"/><path d="M11 4v-1a1 1 0 011-1h1a1 1 0 011 1v8a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1"/></svg>
+        Déconnexion
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+        <input type="text" placeholder="Rechercher des administrateurs..."/>
+      </div>
+      <div class="icon-btn" style="margin-left:8px;">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5a5 5 0 00-5 5v3l-1.5 2h13l-1.5-2V6.5a5 5 0 00-5-5z"/><path d="M6.5 13.5a1.5 1.5 0 003 0"/></svg>
+      </div>
+      <div class="icon-btn">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M6 6c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2v2M8 12v.5"/></svg>
+      </div>
+      <div class="user-block">
+        <div class="user-info">
+          <div class="user-name">Amine Belkaid</div>
+          <div class="user-role">Super Administrateur</div>
+        </div>
+        <div class="uavatar">AB</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="breadcrumb">
+        <span>Administration</span>
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+        <span>Gestion du personnel</span>
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+        <span class="active">Nouvel Administrateur</span>
+      </div>
+
+      <div class="page-title">Inviter un nouvel administrateur</div>
+      <div class="page-sub">Configurez les accès et les permissions pour votre nouveau collaborateur PetCare Admin.</div>
+
+      <div class="form-card">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7"/><path d="M17 15v6M14 18h6"/></svg>
+          </div>
+          <div>
+            <div class="section-title">Informations de Profil</div>
+            <div class="section-sub">Détails personnels et identifiants de connexion</div>
+          </div>
+        </div>
+
+        <div class="fields-row">
+          <div class="field">
+            <label>Nom Complet</label>
+            <input type="text" placeholder="ex: Jean Dupont"/>
+          </div>
+          <div class="field">
+            <label>Adresse Email</label>
+            <input type="email" placeholder="jean.dupont@petcarecare.com"/>
+          </div>
+        </div>
+
+        <div class="role-row">
+          <div class="field role-select-wrap">
+            <label>Rôle Administrateur</label>
+            <select>
+              <option>Modérateur</option>
+              <option>Éditeur</option>
+              <option>Super Admin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="permissions-section">
+          <div class="perm-title">Paramètres des Permissions</div>
+          <div class="perm-sub">Définissez précisément les modules auxquels cet utilisateur peut accéder.</div>
+
+          <div class="perm-grid">
+            <div class="perm-item checked">
+              <div class="checkbox on">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg>
+              </div>
+              <div>
+                <div class="perm-name">Gestion Médicale</div>
+                <div class="perm-desc">Accès aux dossiers vétérinaires et prescriptions.</div>
+              </div>
+            </div>
+            <div class="perm-item checked">
+              <div class="checkbox on">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg>
+              </div>
+              <div>
+                <div class="perm-name">Facturation &amp; Paiements</div>
+                <div class="perm-desc">Visualisation des factures et rapports financiers.</div>
+              </div>
+            </div>
+            <div class="perm-item">
+              <div class="checkbox"></div>
+              <div>
+                <div class="perm-name">Configuration Système</div>
+                <div class="perm-desc">Modifier les paramètres globaux de la clinique.</div>
+              </div>
+            </div>
+            <div class="perm-item checked">
+              <div class="checkbox on">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg>
+              </div>
+              <div>
+                <div class="perm-name">Support Client</div>
+                <div class="perm-desc">Répondre aux messages des propriétaires.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel">Annuler</button>
+          <button class="btn-submit">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2L6 10M14 2H9M14 2V7"/></svg>
+            Inviter l'Admin
+          </button>
+        </div>
+      </div>
+
+      <div class="security-note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.8" style="flex-shrink:0;margin-top:1px;"><path d="M12 2L4 6v6c0 5 3.6 9.7 8 11 4.4-1.3 8-6 8-11V6l-8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div class="security-text"><strong>Note de Sécurité :</strong> Une invitation sécurisée sera envoyée à l'adresse e-mail spécifiée. Le lien d'activation expire dans 48 heures pour garantir la protection de votre infrastructure clinique.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const submitBtn = document.querySelector('.btn-submit');
+  const cancelBtn = document.querySelector('.btn-cancel');
+  const inputs = document.querySelectorAll('input');
+  const permItems = document.querySelectorAll('.perm-item');
+
+  // Handle permission toggles
+  permItems.forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+      const checkbox = item.querySelector('.checkbox');
+      checkbox.classList.toggle('on');
+      if (checkbox.classList.contains('on')) {
+        checkbox.innerHTML = '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg>';
+      } else {
+        checkbox.innerHTML = '';
+      }
+    });
+  });
+
+  submitBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    // In this specific mockup:
+    // inputs[0] is search
+    // inputs[1] is name
+    // inputs[2] is email
+    const name = inputs[1].value;
+    const email = inputs[2].value;
+
+    if (!name || !email) {
+      alert('Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    submitBtn.innerHTML = 'Envoi en cours...';
+    submitBtn.style.opacity = '0.7';
+    submitBtn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+      alert('Invitation envoyée avec succès à ' + email);
+      submitBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2L6 10M14 2H9M14 2V7"/></svg> Inviter l\'Admin';
+      submitBtn.style.opacity = '1';
+      submitBtn.disabled = false;
+      
+      // Clear form
+      inputs[1].value = '';
+      inputs[2].value = '';
+    }, 1500);
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    if (confirm('Voulez-vous vraiment annuler ?')) {
+      window.history.back();
+    }
+  });
+});
+</script>

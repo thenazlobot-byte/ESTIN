@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetCare – Pet Care Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a7a6e;
+    --teal-light: #e8f5f3;
+    --teal-mid: #2a9d8f;
+    --text-dark: #1a2332;
+    --text-muted: #7a8898;
+    --border: #e2e8f0;
+    --bg: #f4f7f9;
+    --white: #ffffff;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(26,122,110,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 200px;
+    min-width: 200px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 0 24px;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--teal);
+    font-weight: 600;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .nav {
+    flex: 1;
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--teal-light); color: var(--teal); }
+  .nav-item.active { background: var(--teal-light); color: var(--teal); }
+  .nav-item svg { flex-shrink: 0; }
+
+  .nav-bottom {
+    padding: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 200px;
+    flex: 1;
+    padding: 36px 40px;
+  }
+
+  /* ── STEPPER ── */
+  .stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-width: 130px;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: calc(50% + 18px);
+    width: calc(100% - 36px);
+    height: 2px;
+    background: var(--border);
+  }
+  .step.done:not(:last-child)::after,
+  .step.active:not(:last-child)::after {
+    background: var(--teal-mid);
+  }
+
+  .step-circle {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    background: var(--white);
+    z-index: 1;
+    transition: all 0.3s;
+  }
+  .step.active .step-circle {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(26,122,110,0.15);
+  }
+  .step.done .step-circle {
+    background: var(--teal-mid);
+    border-color: var(--teal-mid);
+    color: white;
+  }
+
+  .step-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 7px;
+    font-weight: 500;
+  }
+  .step.active .step-label { color: var(--teal); font-weight: 600; }
+
+  /* ── CARDS AREA ── */
+  .section-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
+  }
+
+  .animals-grid {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .animal-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px 24px 22px;
+    border: 1.5px solid var(--border);
+    min-width: 170px;
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .animal-card:hover {
+    border-color: var(--teal-mid);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(26,122,110,0.13);
+  }
+
+  .animal-avatar {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--teal-light);
+    margin-bottom: 14px;
+  }
+
+  .animal-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+  }
+  .animal-breed {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .btn-choose {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-choose:hover { background: #155f55; transform: scale(1.02); }
+
+  /* Add new animal card */
+  .animal-card.add-card {
+    border: 2px dashed #c8d8d6;
+    background: #fafcfc;
+    min-width: 200px;
+    width: 220px;
+    justify-content: center;
+  }
+  .add-icon {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    color: var(--teal);
+    font-size: 22px;
+    font-weight: 300;
+  }
+  .add-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+  .add-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── FORM SECTION ── */
+  .form-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 30px 32px;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.4s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-icon {
+    width: 40px; height: 40px;
+    background: var(--teal-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--teal);
+    flex-shrink: 0;
+  }
+  .form-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+  }
+  .form-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 28px;
+    margin-bottom: 28px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    letter-spacing: 0.1px;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--text-dark);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  .form-input::placeholder { color: #b0bec5; }
+  .form-input:focus, .form-select:focus {
+    border-color: var(--teal-mid);
+    box-shadow: 0 0 0 3px rgba(42,157,143,0.12);
+  }
+
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a8898' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  /* Gender toggle */
+  .gender-group {
+    display: flex;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    overflow: hidden;
+  }
+  .gender-btn {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+  }
+  .gender-btn.active {
+    background: var(--teal);
+    color: white;
+    font-weight: 600;
+  }
+  .gender-btn:not(.active):hover { background: var(--teal-light); color: var(--teal); }
+  .gender-btn:first-child { border-right: 1px solid var(--border); }
+
+  /* Form actions */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .btn-cancel {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .btn-cancel:hover { background: var(--bg); color: var(--text-dark); }
+
+  .btn-submit {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-submit:hover { background: #155f55; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,122,110,0.25); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-name">PetCare</div>
+    <div class="logo-sub">Pet Care Portal</div>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Accueil
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Mes Rendez-vous
+    </a>
+    <a href="#" class="nav-item active">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Réservations
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Paramètres
+    </a>
+  </nav>
+
+  <div class="nav-bottom">
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Support
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><path d="M9 20H5a2 2 0 01-2-2V6a2 2 0 012-2h4"/></svg>
+      Déconnexion
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step active">
+      <div class="step-circle">1</div>
+      <span class="step-label">Choisir l'animal</span>
+    </div>
+    <div class="step">
+      <div class="step-circle">2</div>
+      <span class="step-label">Service</span>
+    </div>
+    <div class="step">
+      <div class="step-circle">3</div>
+      <span class="step-label">Vétérinaire</span>
+    </div>
+    <div class="step">
+      <div class="step-circle">4</div>
+      <span class="step-label">Calendrier</span>
+    </div>
+  </div>
+
+  <!-- Animal Cards -->
+  <div class="animals-grid">
+
+    <div class="animal-card">
+      <img class="animal-avatar" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop" alt="Oscar">
+      <div class="animal-name">Oscar</div>
+      <div class="animal-breed">Golden Retriever • 2 ans</div>
+      <button class="btn-choose">Choisir Oscar →</button>
+    </div>
+
+    <div class="animal-card">
+      <img class="animal-avatar" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop" alt="Luna">
+      <div class="animal-name">Luna</div>
+      <div class="animal-breed">Siamois Mix • 4 ans</div>
+      <button class="btn-choose">Choisir Luna →</button>
+    </div>
+
+    <div class="animal-card add-card">
+      <div class="add-icon">+</div>
+      <div class="add-title">Inscrire un Nouvel Animal</div>
+      <div class="add-desc">Vous avez un nouveau compagnon ? Remplissez ses informations ici.</div>
+    </div>
+
+  </div>
+
+  <!-- Registration Form -->
+  <div class="form-section">
+    <div class="form-header">
+      <div class="form-icon">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg>
+      </div>
+      <div>
+        <div class="form-title">Enregistrement du Nouvel Animal</div>
+        <div class="form-subtitle">Veuillez fournir les détails de base pour créer le dossier médical de votre animal.</div>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nom de l'animal</label>
+        <input class="form-input" type="text" placeholder="ex: Simba">
+      </div>
+      <div class="form-group">
+        <label>Espèce</label>
+        <select class="form-select">
+          <option>Chien</option>
+          <option>Chat</option>
+          <option>Lapin</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Âge</label>
+        <input class="form-input" type="text" placeholder="ex: 3">
+      </div>
+      <div class="form-group">
+        <label>Sexe</label>
+        <div class="gender-group">
+          <button class="gender-btn active" onclick="setGender(this)">Mâle</button>
+          <button class="gender-btn" onclick="setGender(this)">Femelle</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-cancel">Annuler</button>
+      <button class="btn-submit">
+        S'inscrire &amp; Continuer
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function setGender(btn) {
+    btn.closest('.gender-group').querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

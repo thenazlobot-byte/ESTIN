@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetCare – Choisir un Service</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a7a6e;
+    --teal-light: #e8f5f3;
+    --teal-mid: #2a9d8f;
+    --text-dark: #1a2332;
+    --text-muted: #7a8898;
+    --border: #e2e8f0;
+    --bg: #f4f7f9;
+    --white: #ffffff;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(26,122,110,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 200px; min-width: 200px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 28px 0 24px;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 10;
+  }
+  .logo { padding: 0 24px 28px; border-bottom: 1px solid var(--border); }
+  .logo-name { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--teal); font-weight: 600; }
+  .logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px; cursor: pointer;
+    color: var(--text-muted); font-size: 13.5px; font-weight: 500;
+    transition: all 0.2s; text-decoration: none;
+  }
+  .nav-item:hover { background: var(--teal-light); color: var(--teal); }
+  .nav-item.active { background: var(--teal-light); color: var(--teal); }
+  .nav-bottom { padding: 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+
+  /* ── MAIN ── */
+  .main { margin-left: 200px; flex: 1; padding: 36px 40px 120px; }
+
+  /* ── STEPPER ── */
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 36px; }
+  .step { display: flex; flex-direction: column; align-items: center; position: relative; min-width: 130px; }
+  .step:not(:last-child)::after {
+    content: ''; position: absolute; top: 16px;
+    left: calc(50% + 18px); width: calc(100% - 36px);
+    height: 2px; background: var(--border);
+  }
+  .step.done:not(:last-child)::after { background: var(--teal-mid); }
+  .step.active:not(:last-child)::after { background: var(--teal-mid); }
+  .step-circle {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    background: var(--white); z-index: 1; transition: all 0.3s;
+  }
+  .step.active .step-circle { background: var(--teal); border-color: var(--teal); color: white; box-shadow: 0 0 0 4px rgba(26,122,110,0.15); }
+  .step.done .step-circle { background: var(--teal-mid); border-color: var(--teal-mid); color: white; }
+  .step-label { font-size: 12px; color: var(--text-muted); margin-top: 7px; font-weight: 500; }
+  .step.active .step-label { color: var(--teal); font-weight: 600; }
+  .step.done .step-label { color: var(--teal-mid); }
+
+  /* ── SERVICE GRID ── */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 0;
+  }
+
+  .service-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 26px 22px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--teal-mid);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: left;
+  }
+  .service-card:hover { border-color: var(--teal-mid); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,122,110,0.12); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card.selected { border-color: var(--teal); background: #f0faf9; box-shadow: 0 0 0 3px rgba(26,122,110,0.12); }
+  .service-card.selected::before { transform: scaleX(1); }
+
+  .service-icon {
+    width: 44px; height: 44px;
+    background: var(--teal-light);
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+
+  .service-name {
+    font-size: 15px; font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+  .service-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* Info card (placeholder) */
+  .service-card.info-card {
+    border: 2px dashed #c8d8d6;
+    background: #fafcfc;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    min-height: 160px;
+    cursor: default;
+  }
+  .info-card:hover { transform: none; box-shadow: var(--shadow); border-color: #c8d8d6; }
+  .info-card:hover::before { transform: scaleX(0); }
+  .info-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .info-text { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 200px; right: 0;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+    z-index: 20;
+  }
+
+  .btn-back {
+    background: none; border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+    padding: 8px 4px;
+  }
+  .btn-back:hover { color: var(--teal); }
+
+  .bar-right { display: flex; align-items: center; gap: 20px; }
+
+  .selected-label {
+    text-align: right;
+  }
+  .selected-label span {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .selected-label strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .btn-next {
+    background: #b0bec5;
+    color: white;
+    border: none;
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: not-allowed;
+    transition: all 0.25s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-next.enabled {
+    background: var(--teal);
+    cursor: pointer;
+  }
+  .btn-next.enabled:hover { background: #155f55; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,122,110,0.25); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-name">PetCare</div>
+    <div class="logo-sub">Pet Care Portal</div>
+  </div>
+  <nav class="nav">
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Accueil
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Mes Rendez-vous
+    </a>
+    <a href="#" class="nav-item active">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Réservations
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Paramètres
+    </a>
+  </nav>
+  <div class="nav-bottom">
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Support
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><path d="M9 20H5a2 2 0 01-2-2V6a2 2 0 012-2h4"/></svg>
+      Déconnexion
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step done">
+      <div class="step-circle">✓</div>
+      <span class="step-label">Choisir l'animal</span>
+    </div>
+    <div class="step active">
+      <div class="step-circle">2</div>
+      <span class="step-label">Service</span>
+    </div>
+    <div class="step">
+      <div class="step-circle">3</div>
+      <span class="step-label">Vétérinaire</span>
+    </div>
+    <div class="step">
+      <div class="step-circle">4</div>
+      <span class="step-label">Calendrier</span>
+    </div>
+  </div>
+
+  <!-- Services Grid -->
+  <div class="services-grid">
+
+    <div class="service-card" onclick="selectService(this, 'Consultation Générale')">
+      <div class="service-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.5 12.5a7.5 7.5 0 1015 0 7.5 7.5 0 00-15 0z"/><path d="M9 12h6M12 9v6"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+      </div>
+      <div class="service-name">Consultation Générale</div>
+      <div class="service-desc">Examens de routine, examens physiques et problèmes de santé non urgents.</div>
+    </div>
+
+    <div class="service-card" onclick="selectService(this, 'Vaccination')">
+      <div class="service-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 3h6v4H9z"/><path d="M12 7v14"/><path d="M8 21h8"/><path d="M7 11h10"/></svg>
+      </div>
+      <div class="service-name">Vaccination</div>
+      <div class="service-desc">Immunisations préventives pour protéger votre animal contre les maladies courantes.</div>
+    </div>
+
+    <div class="service-card" onclick="selectService(this, 'Chirurgie')">
+      <div class="service-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3v4M8 5l3 3M16 5l-3 3"/><path d="M7 13l5 5 5-5"/><path d="M12 10v8"/></svg>
+      </div>
+      <div class="service-name">Chirurgie</div>
+      <div class="service-desc">Procédures chirurgicales mineures et majeures, y compris la stérilisation.</div>
+    </div>
+
+    <div class="service-card" onclick="selectService(this, 'Soins Dentaires')">
+      <div class="service-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2C9 2 6 4 6 7c0 2 1 3.5 1 5.5 0 3 1 7 3 7s2-3 2-5 0-2 0-2 0 2 0 5-1 5 2 5 3-4 3-7c0-2 1-3.5 1-5.5 0-3-3-5-6-5z"/></svg>
+      </div>
+      <div class="service-name">Soins Dentaires</div>
+      <div class="service-desc">Nettoyage professionnel des dents, extractions et évaluations de la santé bucco-dentaire.</div>
+    </div>
+
+    <div class="service-card" onclick="selectService(this, 'Toilettage')">
+      <div class="service-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>
+      </div>
+      <div class="service-name">Toilettage</div>
+      <div class="service-desc">Bain, coupe des griffes et tonte adaptées aux besoins spécifiques de la race de votre animal.</div>
+    </div>
+
+    <!-- Info placeholder card -->
+    <div class="service-card info-card">
+      <div class="info-icon">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="info-text">Sélectionnez un service pour voir les créneaux disponibles et les experts vétérinaires.</div>
+    </div>
+
+  </div>
+</main>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn-back">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Retour à la sélection de l'animal
+  </button>
+
+  <div class="bar-right">
+    <div class="selected-label">
+      <span>Service Sélectionné</span>
+      <strong id="selectedName">Aucun</strong>
+    </div>
+    <button class="btn-next" id="nextBtn">
+      Étape Suivante
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  let selected = null;
+
+  function selectService(card, name) {
+    // deselect previous
+    if (selected) selected.classList.remove('selected');
+    // select new
+    card.classList.add('selected');
+    selected = card;
+    // update bottom bar
+    document.getElementById('selectedName').textContent = name;
+    const btn = document.getElementById('nextBtn');
+    btn.classList.add('enabled');
+    btn.style.cursor = 'pointer';
+  }
+</script>
+
+</body>
+</html>

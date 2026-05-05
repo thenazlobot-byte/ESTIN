@@ -1,0 +1,288 @@
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+.dash{display:flex;min-height:700px;background:var(--color-background-tertiary);font-family:var(--font-sans);}
+.sidebar{width:200px;min-width:200px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:20px 0;}
+.logo{padding:0 16px 20px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:14px;}
+.logo-name{font-size:14px;font-weight:500;color:#1D9E75;text-transform:uppercase;letter-spacing:0.04em;}
+.logo-sub{font-size:10px;color:var(--color-text-secondary);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:var(--color-text-secondary);cursor:pointer;border-radius:6px;margin:1px 8px;}
+.nav-item.active{background:#e8f8f3;color:#0F6E56;font-weight:500;}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;}
+.sidebar-bottom{margin-top:auto;border-top:0.5px solid var(--color-border-tertiary);padding-top:12px;}
+.main{flex:1;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 24px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);}
+.search-box{flex:1;max-width:360px;display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 12px;}
+.search-box input{border:none;background:transparent;font-size:13px;color:var(--color-text-primary);outline:none;width:100%;}
+.search-box input::placeholder{color:var(--color-text-secondary);}
+.icon-btn{width:32px;height:32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);}
+.user-block{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.user-info{text-align:right;}
+.user-name{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.user-role{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;}
+.avatar{width:30px;height:30px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#fff;}
+.content{padding:24px;flex:1;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;}
+.page-title{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.page-sub{font-size:13px;color:var(--color-text-secondary);margin-top:5px;max-width:480px;line-height:1.5;}
+.btn-primary{display:flex;align-items:center;gap:8px;padding:9px 16px;background:#1D9E75;color:#fff;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;border:none;white-space:nowrap;line-height:1.4;text-align:center;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.stat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px;display:flex;flex-direction:column;gap:8px;}
+.stat-icon{width:32px;height:32px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;}
+.stat-label{font-size:11px;color:var(--color-text-secondary);}
+.stat-value{font-size:24px;font-weight:500;color:var(--color-text-primary);line-height:1;}
+.table-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:10px 16px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-secondary);font-weight:500;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);}
+tbody tr{border-bottom:0.5px solid var(--color-border-tertiary);}
+tbody tr:last-child{border-bottom:none;}
+tbody td{padding:13px 16px;font-size:13px;color:var(--color-text-primary);vertical-align:middle;}
+.admin-cell{display:flex;align-items:center;gap:10px;}
+.admin-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.admin-name{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.admin-id{font-size:11px;color:var(--color-text-secondary);}
+.locked-badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;background:#FCEBEB;color:#A32D2D;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;margin-top:3px;}
+.role-badge{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:500;border:0.5px solid;}
+.role-super{background:#e8f8f3;color:#0F6E56;border-color:#9FE1CB;}
+.role-editeur{background:#e8f0fe;color:#185FA5;border-color:#B5D4F4;}
+.role-moderateur{background:#f1efe8;color:#5F5E5A;border-color:#D3D1C7;}
+.email-cell{font-size:12px;color:var(--color-text-secondary);}
+.last-login-val{font-size:12px;color:var(--color-text-primary);}
+.last-login-ip{font-size:10px;color:var(--color-text-secondary);}
+.last-login-warn{font-size:12px;color:#BA7517;}
+.actions-cell{display:flex;align-items:center;gap:6px;}
+.act-btn{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--color-border-tertiary);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);}
+.act-btn.amber{color:#BA7517;border-color:#FAC775;}
+.act-btn.red{color:#A32D2D;border-color:#F7C1C1;}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-top:0.5px solid var(--color-border-tertiary);}
+.pag-info{font-size:12px;color:var(--color-text-secondary);}
+.pag-btns{display:flex;align-items:center;gap:4px;}
+.pag-btn{width:30px;height:30px;border-radius:6px;border:0.5px solid var(--color-border-tertiary);background:transparent;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--color-text-secondary);}
+.pag-btn.active{background:#1D9E75;color:#fff;border-color:#1D9E75;font-weight:500;}
+.pag-btn.new-label{font-size:9px;text-transform:uppercase;letter-spacing:0.04em;width:auto;padding:0 8px;}
+</style>
+
+<div class="dash">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-name">PetCare Admin</div>
+      <div class="logo-sub">Veterinary Care</div>
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Tableau de bord
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+      Rendez-vous
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M10 2h4M12 0v4"/></svg>
+      Vétérinaires
+    </div>
+    <div class="nav-item active">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><circle cx="12" cy="5" r="2.5"/><path d="M1 14c0-2.8 2.2-5 5-5s5 2.2 5 5"/><path d="M14 14c0-1.7-1.3-3-3-3"/></svg>
+      Administrateurs
+    </div>
+    <div class="sidebar-bottom">
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v5M8 5v.5"/></svg>
+        Support
+      </div>
+      <div class="nav-item" style="color:#A32D2D;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 8H2M6 5l-3 3 3 3"/><path d="M11 4v-1a1 1 0 011-1h1a1 1 0 011 1v8a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1"/></svg>
+        Déconnexion
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+        <input type="text" placeholder="Rechercher des administrateurs..."/>
+      </div>
+      <div class="icon-btn" style="margin-left:8px;">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5a5 5 0 00-5 5v3l-1.5 2h13l-1.5-2V6.5a5 5 0 00-5-5z"/><path d="M6.5 13.5a1.5 1.5 0 003 0"/></svg>
+      </div>
+      <div class="icon-btn">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M6 6c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2v2M8 12v.5"/></svg>
+      </div>
+      <div class="user-block">
+        <div class="user-info">
+          <div class="user-name">Amine Belkaid</div>
+          <div class="user-role">Super Administrateur</div>
+        </div>
+        <div class="avatar">AB</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Administrateurs Système</div>
+          <div class="page-sub">Gérer les niveaux d'accès à la plateforme et les autorisations de sécurité pour le personnel de la clinique.</div>
+        </div>
+        <button class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7"/><path d="M17 15v6M14 18h6"/></svg>
+          Inviter un nouvel<br>administrateur
+        </button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f8f3;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1D9E75" stroke-width="1.5"><path d="M8 8a3 3 0 100-6 3 3 0 000 6z"/><path d="M2 14c0-3.3 2.7-5 6-5s6 1.7 6 5"/></svg>
+          </div>
+          <div class="stat-label">Total Administrateurs</div>
+          <div class="stat-value">24</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f0fe;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#185FA5" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 4v4l3 2"/></svg>
+          </div>
+          <div class="stat-label">Actifs maintenant</div>
+          <div class="stat-value">08</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#eaf3de;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#3B6D11" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7l2 2 4-4"/></svg>
+          </div>
+          <div class="stat-label">Score de sécurité</div>
+          <div class="stat-value">98%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#FCEBEB;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A32D2D" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3M8 11v.3"/></svg>
+          </div>
+          <div class="stat-label">Invitations en attente</div>
+          <div class="stat-value">03</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Administrateur</th>
+              <th>Rôle</th>
+              <th>Adresse Email</th>
+              <th>Dernière Connexion</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="admin-cell">
+                  <div class="admin-avatar" style="background:#e8f8f3;color:#0F6E56;">YM</div>
+                  <div>
+                    <div class="admin-name">Youcef Mansouri</div>
+                    <div class="admin-id">ID: AD-7281-DZ</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="role-badge role-super">Super Admin</span></td>
+              <td><div class="email-cell">y.mansouri@petcare-clinic.dz</div></td>
+              <td>
+                <div class="last-login-val">Aujourd'hui, 09:42</div>
+                <div class="last-login-ip">IP: 197.200.15.14</div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="10" height="9" rx="1"/><path d="M7 7v3M9 7v3M1 4h14M6 4V2h4v2"/></svg></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="admin-cell">
+                  <div class="admin-avatar" style="background:#e8f0fe;color:#185FA5;">MB</div>
+                  <div>
+                    <div class="admin-name">Meriem Benali</div>
+                    <div class="admin-id">ID: AD-5529-DZ</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="role-badge role-editeur">Éditeur</span></td>
+              <td><div class="email-cell">m.benali@petcare-clinic.dz</div></td>
+              <td>
+                <div class="last-login-val">Hier, 14:15</div>
+                <div class="last-login-ip">IP: 105.235.128.9</div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="10" height="9" rx="1"/><path d="M7 7v3M9 7v3M1 4h14M6 4V2h4v2"/></svg></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="admin-cell">
+                  <div class="admin-avatar" style="background:#f1efe8;color:#5F5E5A;">SB</div>
+                  <div>
+                    <div class="admin-name">Sofiane Brahimi</div>
+                    <div class="admin-id">ID: AD-9912-DZ</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="role-badge role-moderateur">Modérateur</span></td>
+              <td><div class="email-cell">s.brahimi@petcare-clinic.dz</div></td>
+              <td>
+                <div class="last-login-val">Oct 24, 11:02 AM</div>
+                <div class="last-login-ip">IP: 41.107.22.88</div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3L11 2z"/></svg></div>
+                  <div class="act-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="10" height="9" rx="1"/><path d="M7 7v3M9 7v3M1 4h14M6 4V2h4v2"/></svg></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="admin-cell">
+                  <div class="admin-avatar" style="background:#FCEBEB;color:#A32D2D;">LK</div>
+                  <div>
+                    <div class="admin-name">Lamia Khelil</div>
+                    <div class="admin-id" style="display:flex;align-items:center;gap:6px;">
+                      <span class="locked-badge">Compte Verrouillé</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="role-badge role-moderateur">Modérateur</span></td>
+              <td><div class="email-cell">l.khelil@petcare-clinic.dz</div></td>
+              <td>
+                <div class="last-login-warn">Il y a 3 semaines</div>
+                <div class="last-login-ip">IP: 197.205.6.5</div>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <div class="act-btn amber">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="7" width="8" height="7" rx="1"/><path d="M6 7V5a2 2 0 014 0v2"/></svg>
+                  </div>
+                  <div class="act-btn red">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="10" height="9" rx="1"/><path d="M7 7v3M9 7v3M1 4h14M6 4V2h4v2"/></svg>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="pag-info">Affichage de <strong>1–4</strong> sur <strong>24</strong> administrateurs</div>
+          <div class="pag-btns">
+            <div class="pag-btn">‹</div>
+            <div class="pag-btn active new-label">Nouv</div>
+            <div class="pag-btn">2</div>
+            <div class="pag-btn">3</div>
+            <div class="pag-btn">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

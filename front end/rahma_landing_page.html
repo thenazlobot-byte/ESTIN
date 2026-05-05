@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetCare Landing Page</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #1a6b5a;
+    --green-mid: #2d8f74;
+    --green-accent: #2a9d72;
+    --green-light: #e8f5f0;
+    --green-lighter: #f0faf6;
+    --text-dark: #1a1a1a;
+    --text-muted: #555;
+    --white: #ffffff;
+    --border: #d4ece3;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f4f8f6;
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 72px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--green-lighter);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a.active {
+    color: var(--green-accent);
+  }
+
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--green-accent);
+    border-radius: 2px;
+  }
+
+  .nav-links a:hover { color: var(--green-accent); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .lang-toggle {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+
+  .btn-connect {
+    background: var(--green-dark);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    padding: 11px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-connect:hover {
+    background: var(--green-mid);
+    transform: translateY(-1px);
+  }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: calc(100vh - 72px);
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 60px 48px;
+    gap: 48px;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-title-ar {
+    font-size: 15px;
+    color: var(--green-accent);
+    font-weight: 500;
+    direction: rtl;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .hero-title-en {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.2;
+  }
+
+  .hero-title-en span { color: var(--green-dark); }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  /* SEARCH */
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 8px 8px 8px 18px;
+    max-width: 520px;
+    gap: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-box:focus-within {
+    border-color: var(--green-accent);
+    box-shadow: 0 0 0 3px rgba(42,157,114,0.12);
+  }
+
+  .search-icon {
+    color: #aaa;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: var(--text-dark);
+    font-family: inherit;
+    background: transparent;
+  }
+
+  .search-box input::placeholder { color: #b0b0b0; }
+
+  .btn-search {
+    background: var(--green-dark);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .btn-search:hover { background: var(--green-mid); }
+
+  /* SOCIAL PROOF */
+  .social-proof {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .avatar-stack {
+    display: flex;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+    margin-left: -10px;
+    background: var(--green-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+
+  .avatar-1 { background: #c8dfd8; }
+  .avatar-2 { background: #a8c8bf; }
+  .avatar-3 { background: #7aada0; }
+
+  .social-text {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .social-text strong {
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  /* HERO IMAGE */
+  .hero-right {
+    display: flex;
+    justify-content: flex-end;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+
+  .image-card {
+    width: 100%;
+    max-width: 580px;
+    aspect-ratio: 4/3;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #6bbfad;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(42,120,90,0.15);
+  }
+
+  .image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #7eccc0 0%, #4fa08a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative pets SVG illustration */
+  .pets-illustration {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+  }
+
+  /* Decorative circles */
+  .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    background: white;
+  }
+
+  .deco-circle-1 { width: 200px; height: 200px; top: -40px; right: -40px; }
+  .deco-circle-2 { width: 120px; height: 120px; bottom: 40px; left: -20px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">🐾</div>
+    <span class="logo-text">PetCare</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active">Accueil</a></li>
+    <li><a href="#">Nos Services</a></li>
+    <li><a href="#">Prendre RDV</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="lang-toggle">EN/AR</button>
+    <button class="btn-connect">Se Connecter</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div>
+      <p class="hero-title-ar">الرعاية بكل رحمة</p>
+      <h1 class="hero-title-en">Compassionate Care<br>for Your <span>Pets.</span></h1>
+    </div>
+
+    <p class="hero-desc">
+      Planifiez vos rendez-vous vétérinaires en quelques secondes. Une
+      plateforme moderne, simple et efficace pour la santé de vos compagnons.
+    </p>
+
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Trouver un vétérinaire ou une clinique...">
+      <button class="btn-search">Rechercher</button>
+    </div>
+
+    <div class="social-proof">
+      <div class="avatar-stack">
+        <div class="avatar avatar-1"></div>
+        <div class="avatar avatar-2"></div>
+        <div class="avatar avatar-3"></div>
+      </div>
+      <p class="social-text">Rejoint par plus de <strong>10,000+</strong> propriétaires d'animaux</p>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="image-card">
+      <div class="image-placeholder">
+        <div class="deco-circle deco-circle-1"></div>
+        <div class="deco-circle deco-circle-2"></div>
+        <!-- SVG Pet illustration -->
+        <svg viewBox="0 0 400 300" class="pets-illustration" xmlns="http://www.w3.org/2000/svg">
+          <!-- Dog body -->
+          <ellipse cx="175" cy="220" rx="70" ry="55" fill="#d4a76a"/>
+          <!-- Dog head -->
+          <circle cx="175" cy="155" r="48" fill="#d4a76a"/>
+          <!-- Dog ears -->
+          <ellipse cx="140" cy="135" rx="18" ry="28" fill="#b8904a" transform="rotate(-15 140 135)"/>
+          <ellipse cx="210" cy="135" rx="18" ry="28" fill="#b8904a" transform="rotate(15 210 135)"/>
+          <!-- Dog face -->
+          <circle cx="162" cy="150" r="5" fill="#3a2a1a"/>
+          <circle cx="188" cy="150" r="5" fill="#3a2a1a"/>
+          <ellipse cx="175" cy="167" rx="14" ry="9" fill="#c08040"/>
+          <circle cx="175" cy="163" r="5" fill="#1a0a0a"/>
+          <!-- Dog nose shine -->
+          <circle cx="172" cy="161" r="2" fill="white" opacity="0.6"/>
+          <!-- Dog smile -->
+          <path d="M 163 172 Q 175 182 187 172" stroke="#a07030" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Dog legs -->
+          <rect x="130" y="258" width="22" height="36" rx="11" fill="#c49458"/>
+          <rect x="160" y="262" width="22" height="32" rx="11" fill="#c49458"/>
+          <rect x="190" y="262" width="22" height="32" rx="11" fill="#c49458"/>
+          <rect x="218" y="258" width="22" height="36" rx="11" fill="#c49458"/>
+          <!-- Dog tail -->
+          <path d="M 242 210 Q 280 190 275 160" stroke="#c49458" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+          <!-- Cat body -->
+          <ellipse cx="295" cy="235" rx="52" ry="42" fill="#8a8a8a"/>
+          <!-- Cat head -->
+          <circle cx="295" cy="180" r="38" fill="#8a8a8a"/>
+          <!-- Cat ears -->
+          <polygon points="265,158 272,128 290,155" fill="#8a8a8a"/>
+          <polygon points="300,155 318,128 325,158" fill="#8a8a8a"/>
+          <polygon points="268,156 273,136 287,154" fill="#c8a0a8"/>
+          <polygon points="303,154 317,136 322,156" fill="#c8a0a8"/>
+          <!-- Cat face -->
+          <ellipse cx="284" cy="176" rx="6" ry="7" fill="#c8a020"/>
+          <ellipse cx="306" cy="176" rx="6" ry="7" fill="#c8a020"/>
+          <ellipse cx="284" cy="177" rx="3" ry="6" fill="#1a0a0a"/>
+          <ellipse cx="306" cy="177" rx="3" ry="6" fill="#1a0a0a"/>
+          <!-- Cat nose -->
+          <polygon points="295,188 291,193 299,193" fill="#d09090"/>
+          <!-- Cat whiskers -->
+          <line x1="258" y1="190" x2="288" y2="193" stroke="#ddd" stroke-width="1.5"/>
+          <line x1="258" y1="196" x2="288" y2="196" stroke="#ddd" stroke-width="1.5"/>
+          <line x1="302" y1="193" x2="332" y2="190" stroke="#ddd" stroke-width="1.5"/>
+          <line x1="302" y1="196" x2="332" y2="196" stroke="#ddd" stroke-width="1.5"/>
+          <!-- Cat paws -->
+          <ellipse cx="270" cy="272" rx="16" ry="10" fill="#787878"/>
+          <ellipse cx="320" cy="272" rx="16" ry="10" fill="#787878"/>
+          <!-- Cat tail -->
+          <path d="M 346 240 Q 370 210 355 185" stroke="#787878" stroke-width="14" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

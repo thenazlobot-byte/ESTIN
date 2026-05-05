@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetCare Admin – Tableau de bord</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #1a7a6e;
+    --teal-light: #e8f5f3;
+    --teal-mid: #2a9d8f;
+    --teal-pale: #b2ddd8;
+    --text-dark: #1a2332;
+    --text-muted: #7a8898;
+    --border: #e2e8f0;
+    --bg: #f4f7f9;
+    --white: #ffffff;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(26,122,110,0.07);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-dark); display: flex; min-height: 100vh; font-size: 14px; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 185px; min-width: 185px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 26px 0 22px;
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 10;
+  }
+  .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
+  .logo-name { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--teal); font-weight: 600; }
+  .logo-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .nav { flex: 1; padding: 18px 10px; display: flex; flex-direction: column; gap: 3px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 9px; cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 500; transition: all 0.2s; text-decoration: none; }
+  .nav-item:hover { background: var(--teal-light); color: var(--teal); }
+  .nav-item.active { background: var(--teal-light); color: var(--teal); font-weight: 600; }
+  .nav-bottom { padding: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; }
+
+  /* ── MAIN ── */
+  .main { margin-left: 185px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--white);
+    border-bottom: 2px solid var(--teal);
+    padding: 0 28px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 9;
+  }
+  .topbar-left h1 { font-size: 18px; font-weight: 700; color: var(--text-dark); }
+  .topbar-left .breadcrumb { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .topbar-icon { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; transition: all 0.2s; }
+  .topbar-icon:hover { border-color: var(--teal-mid); color: var(--teal); }
+  .admin-chip { display: flex; align-items: center; gap: 9px; background: var(--teal-light); border-radius: 22px; padding: 5px 12px 5px 5px; cursor: pointer; }
+  .admin-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--teal-mid); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 700; overflow: hidden; }
+  .admin-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .admin-info { line-height: 1.3; }
+  .admin-name { font-size: 12.5px; font-weight: 700; color: var(--text-dark); }
+  .admin-role { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+
+  /* ── CONTENT ── */
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* ── STAT CARDS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+  .stat-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); padding: 18px 20px; position: relative; overflow: hidden; }
+  .stat-card::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: var(--teal-light); border-radius: 0 0 0 60px; opacity: 0.5; }
+  .stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 800; color: var(--text-dark); line-height: 1; margin-bottom: 4px; }
+  .stat-unit { font-size: 14px; font-weight: 700; color: var(--teal); display: block; margin-bottom: 10px; }
+  .stat-trend { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #2e9e6b; }
+  .stat-trend.up { color: #2e9e6b; }
+  .stat-trend span.muted { color: var(--text-muted); font-weight: 400; margin-left: 2px; }
+
+  .stat-reviews { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .review-avatars { display: flex; }
+  .review-avatars img { width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; margin-left: -6px; object-fit: cover; }
+  .review-avatars img:first-child { margin-left: 0; }
+  .review-count { font-size: 11px; color: var(--text-muted); }
+
+  /* ── MIDDLE ROW ── */
+  .middle-row { display: grid; grid-template-columns: 1fr 280px; gap: 18px; margin-bottom: 22px; }
+
+  /* CHART CARD */
+  .chart-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); padding: 22px 24px; }
+  .chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+  .chart-title { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+  .chart-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .toggle-btns { display: flex; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .toggle-btn { padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; border: none; background: none; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
+  .toggle-btn.active { background: var(--teal); color: white; }
+
+  /* BAR CHART */
+  .bar-chart { display: flex; align-items: flex-end; gap: 16px; height: 160px; padding-bottom: 24px; position: relative; border-bottom: 1.5px solid var(--border); margin-bottom: 14px; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; position: relative; }
+  .bar-wrap { width: 100%; display: flex; gap: 4px; align-items: flex-end; justify-content: center; }
+  .bar {
+    border-radius: 5px 5px 0 0;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    flex: 1; max-width: 22px;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar.clinic { background: var(--teal-mid); }
+  .bar.pharmacy { background: #d0eeea; }
+  .bar-label { font-size: 10px; color: var(--text-muted); font-weight: 600; position: absolute; bottom: -20px; letter-spacing: 0.3px; }
+
+  .chart-legend { display: flex; gap: 18px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .legend-dot.clinic { background: var(--teal-mid); }
+  .legend-dot.pharmacy { background: #d0eeea; border: 1.5px solid var(--teal-pale); }
+
+  /* DONUT CARD */
+  .donut-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); padding: 22px 20px; display: flex; flex-direction: column; }
+  .donut-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 3px; }
+  .donut-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .donut-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .donut-svg { filter: drop-shadow(0 4px 10px rgba(26,122,110,0.15)); }
+  .donut-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+  .cat-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+  .cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .cat-name { color: var(--text-muted); }
+  .cat-pct { font-weight: 700; color: var(--text-dark); margin-left: auto; }
+
+  /* ── SESSIONS TABLE ── */
+  .sessions-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); padding: 20px 24px; }
+  .sessions-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .sessions-title { font-size: 16px; font-weight: 700; color: var(--text-dark); }
+  .sessions-link { font-size: 13px; font-weight: 600; color: var(--teal); text-decoration: none; transition: opacity 0.2s; }
+  .sessions-link:hover { opacity: 0.7; }
+
+  .session-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .session-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .session-icon { width: 40px; height: 40px; border-radius: 11px; background: var(--teal-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--teal); }
+  .session-info { flex: 1; min-width: 0; }
+  .session-name { font-size: 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .session-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .session-time { text-align: right; min-width: 130px; }
+  .session-time-val { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+  .session-location { font-size: 11px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.3px; }
+  .badge { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.4px; }
+  .badge-confirmed { background: #e6f9f2; color: #0e7a5e; }
+  .badge-pending { background: #fff5e0; color: #b07000; }
+  .session-dots { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+  .session-dots:hover { background: var(--bg); color: var(--text-dark); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-name">PetCare Admin</div>
+    <div class="logo-sub">Veterinary Care</div>
+  </div>
+  <nav class="nav">
+    <a href="#" class="nav-item active">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Tableau de bord
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Rendez-vous
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+      Vétérinaires
+    </a>
+    <a href="#" class="nav-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Administrateurs
+    </a>
+  </nav>
+  <div class="nav-bottom">
+    <a href="#" class="nav-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Support
+    </a>
+    <a href="#" class="nav-item" style="color:#e05555;">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><path d="M9 20H5a2 2 0 01-2-2V6a2 2 0 012-2h4"/></svg>
+      Déconnexion
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Aperçu des statistiques</h1>
+      <div class="breadcrumb">Tableau de bord / Performance</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-icon">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      </div>
+      <div class="topbar-icon">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+      <div class="admin-chip">
+        <div class="admin-avatar">
+          <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=60&h=60&fit=crop&crop=face" alt="Dr. Sarah K.">
+        </div>
+        <div class="admin-info">
+          <div class="admin-name">Dr. Sarah K.</div>
+          <div class="admin-role">Administrateur Chef</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value">2,500,000</div>
+        <span class="stat-unit">DZD</span>
+        <div class="stat-trend up">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          +12.5% <span class="muted">vs last month</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Reserved Sessions</div>
+        <div class="stat-value">450</div>
+        <span class="stat-unit" style="color:var(--text-muted); font-weight:400; font-size:12px;">&nbsp;</span>
+        <div class="stat-trend up">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          +8.2% <span class="muted">capacity used</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Registered Pets</div>
+        <div class="stat-value">1,284</div>
+        <span class="stat-unit" style="color:var(--text-muted); font-weight:400; font-size:12px;">&nbsp;</span>
+        <div class="stat-trend up">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          +24 new <span class="muted">this week</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Satisfaction Rate</div>
+        <div class="stat-value" style="font-size:22px;">4.9 / 5.0</div>
+        <span class="stat-unit" style="color:var(--text-muted); font-weight:400; font-size:12px; margin-bottom:6px;">&nbsp;</span>
+        <div class="stat-reviews">
+          <div class="review-avatars">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face" alt="">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=face" alt="">
+          </div>
+          <div class="review-count">Based on 320 reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE ROW -->
+    <div class="middle-row">
+
+      <!-- BAR CHART -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Tendances mensuelles des revenus</div>
+            <div class="chart-sub">Trajectoire des revenus pour l'exercice fiscal actuel</div>
+          </div>
+          <div class="toggle-btns">
+            <button class="toggle-btn active">Mensuel</button>
+            <button class="toggle-btn">Trimestriel</button>
+          </div>
+        </div>
+
+        <div class="bar-chart">
+          <div class="bar-group">
+            <div class="bar-wrap">
+              <div class="bar clinic" style="height:55px;"></div>
+              <div class="bar pharmacy" style="height:30px;"></div>
+            </div>
+            <span class="bar-label">JAN</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-wrap">
+              <div class="bar clinic" style="height:70px;"></div>
+              <div class="bar pharmacy" style="height:40px;"></div>
+            </div>
+            <span class="bar-label">FEB</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-wrap">
+              <div class="bar clinic" style="height:65px;"></div>
+              <div class="bar pharmacy" style="height:35px;"></div>
+            </div>
+            <span class="bar-label">MAR</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-wrap">
+              <div class="bar clinic" style="height:100px;"></div>
+              <div class="bar pharmacy" style="height:55px;"></div>
+            </div>
+            <span class="bar-label">APR</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-wrap">
+              <div class="bar clinic" style="height:118px;"></div>
+              <div class="bar pharmacy" style="height:62px;"></div>
+            </div>
+            <span class="bar-label">MAY</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-wrap">
+              <div class="bar clinic" style="height:136px;"></div>
+              <div class="bar pharmacy" style="height:70px;"></div>
+            </div>
+            <span class="bar-label">JUN</span>
+          </div>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot clinic"></div> Revenu des cliniques</div>
+          <div class="legend-item"><div class="legend-dot pharmacy"></div> E-Pharmacie</div>
+        </div>
+      </div>
+
+      <!-- DONUT CHART -->
+      <div class="donut-card">
+        <div class="donut-title">Catégories d'animaux</div>
+        <div class="donut-sub">Répartition des patients actifs</div>
+
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="160" height="160" viewBox="0 0 160 160">
+            <!-- background circle -->
+            <circle cx="80" cy="80" r="58" fill="none" stroke="#eef3f2" stroke-width="22"/>
+            <!-- Dogs 45% -->
+            <circle cx="80" cy="80" r="58" fill="none" stroke="#1a7a6e" stroke-width="22"
+              stroke-dasharray="163.9 364.4" stroke-dashoffset="0" transform="rotate(-90 80 80)"/>
+            <!-- Cats 30% -->
+            <circle cx="80" cy="80" r="58" fill="none" stroke="#2a9d8f" stroke-width="22"
+              stroke-dasharray="109.3 419" stroke-dashoffset="-163.9" transform="rotate(-90 80 80)"/>
+            <!-- Birds 15% -->
+            <circle cx="80" cy="80" r="58" fill="none" stroke="#6dcfc5" stroke-width="22"
+              stroke-dasharray="54.6 473.7" stroke-dashoffset="-273.2" transform="rotate(-90 80 80)"/>
+            <!-- Others 10% -->
+            <circle cx="80" cy="80" r="58" fill="none" stroke="#b2ddd8" stroke-width="22"
+              stroke-dasharray="36.4 491.9" stroke-dashoffset="-327.8" transform="rotate(-90 80 80)"/>
+            <!-- center text -->
+            <text x="80" y="75" text-anchor="middle" font-family="DM Sans" font-size="22" font-weight="800" fill="#1a2332">1.2k</text>
+            <text x="80" y="93" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="600" fill="#7a8898" letter-spacing="1">TOTAL</text>
+          </svg>
+        </div>
+
+        <div class="donut-cats">
+          <div class="cat-item">
+            <div class="cat-dot" style="background:#1a7a6e;"></div>
+            <span class="cat-name">Chiens</span>
+            <span class="cat-pct">45%</span>
+          </div>
+          <div class="cat-item">
+            <div class="cat-dot" style="background:#2a9d8f;"></div>
+            <span class="cat-name">Chats</span>
+            <span class="cat-pct">30%</span>
+          </div>
+          <div class="cat-item">
+            <div class="cat-dot" style="background:#6dcfc5;"></div>
+            <span class="cat-name">Oiseaux</span>
+            <span class="cat-pct">15%</span>
+          </div>
+          <div class="cat-item">
+            <div class="cat-dot" style="background:#b2ddd8;"></div>
+            <span class="cat-name">Autres</span>
+            <span class="cat-pct">10%</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RECENT SESSIONS -->
+    <div class="sessions-card">
+      <div class="sessions-header">
+        <div class="sessions-title">Sessions réservées récentes</div>
+        <a href="#" class="sessions-link">Voir toutes les sessions →</a>
+      </div>
+
+      <!-- Row 1 -->
+      <div class="session-row">
+        <div class="session-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.344-2.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><ellipse cx="12" cy="17" rx="5" ry="3"/></svg>
+        </div>
+        <div class="session-info">
+          <div class="session-name">Max (Golden Retriever)</div>
+          <div class="session-detail">Vaccination • Dr. Amine R.</div>
+        </div>
+        <div class="session-time">
+          <div class="session-time-val">Aujourd'hui, 14:30</div>
+          <div class="session-location">ALGER, DZ</div>
+        </div>
+        <span class="badge badge-confirmed">CONFIRMÉ</span>
+        <div class="session-dots">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="session-row">
+        <div class="session-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.344-2.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><ellipse cx="12" cy="17" rx="5" ry="3"/></svg>
+        </div>
+        <div class="session-info">
+          <div class="session-name">Luna (Persian Cat)</div>
+          <div class="session-detail">Dental Checkup • Dr. Sara B.</div>
+        </div>
+        <div class="session-time">
+          <div class="session-time-val">Demain, 09:00</div>
+          <div class="session-location">ORAN, DZ</div>
+        </div>
+        <span class="badge badge-pending">EN ATTENTE</span>
+        <div class="session-dots">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="session-row">
+        <div class="session-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.344-2.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><ellipse cx="12" cy="17" rx="5" ry="3"/></svg>
+        </div>
+        <div class="session-info">
+          <div class="session-name">Charlie (African Grey)</div>
+          <div class="session-detail">Wing Clipping • Dr. Hamza M.</div>
+        </div>
+        <div class="session-time">
+          <div class="session-time-val">Oct 24, 11:15</div>
+          <div class="session-location">CONSTANTINE, DZ</div>
+        </div>
+        <span class="badge badge-confirmed">CONFIRMÉ</span>
+        <div class="session-dots">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

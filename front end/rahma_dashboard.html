@@ -1,0 +1,283 @@
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);min-height:100vh;display:flex}
+a{text-decoration:none;color:inherit}
+
+.sidebar{width:210px;flex-shrink:0;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:24px 0;min-height:100vh}
+.sidebar-logo{padding:0 20px 24px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sidebar-logo .brand{font-size:17px;font-weight:500;color:#0f6e56}
+.sidebar-logo .sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--border-radius-md);font-size:14px;color:var(--color-text-secondary);cursor:pointer;transition:background 0.15s}
+.nav-item:hover{background:var(--color-background-secondary)}
+.nav-item.active{background:#e1f5ee;color:#0f6e56;font-weight:500}
+.nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sidebar-bottom{padding:16px 12px;border-top:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;gap:4px}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:20px 28px;display:flex;align-items:center;justify-content:space-between;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.topbar-left .greeting{font-size:17px;font-weight:500}
+.topbar-left .sub{font-size:13px;color:var(--color-text-secondary);margin-top:3px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.bell-btn{width:36px;height:36px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.bell-btn svg{width:16px;height:16px;stroke:var(--color-text-secondary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.btn-rdv{display:flex;align-items:center;gap:6px;background:#1a6b5a;color:white;border:none;border-radius:var(--border-radius-md);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
+.btn-rdv svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.content{flex:1;padding:24px 28px;display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start}
+.col-left{display:flex;flex-direction:column;gap:16px}
+.col-right{display:flex;flex-direction:column;gap:16px}
+
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:20px}
+
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-header .title{font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
+.card-header .title svg{width:16px;height:16px;stroke:#0f6e56;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.voir-tout{font-size:13px;color:#0f6e56;cursor:pointer}
+
+.rdv-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.rdv-item:last-child{border-bottom:none;padding-bottom:0}
+.rdv-icon{width:44px;height:44px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rdv-icon.green{background:#e1f5ee}
+.rdv-icon.gray{background:var(--color-background-secondary)}
+.rdv-icon svg{width:20px;height:20px;stroke:#0f6e56;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rdv-icon.gray svg{stroke:var(--color-text-secondary)}
+.rdv-info{flex:1}
+.rdv-info .name{font-size:14px;font-weight:500}
+.rdv-info .doc{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.rdv-date{text-align:right;flex-shrink:0}
+.rdv-date .date{font-size:13px;font-weight:500}
+.rdv-date .time{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;margin-top:6px}
+.badge.confirmed{background:#e1f5ee;color:#0f6e56}
+.badge.pending{background:#f1efe8;color:#5f5e5a}
+
+.bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cta-card{background:#1a6b5a;border-radius:var(--border-radius-lg);padding:20px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.cta-card::after{content:'';position:absolute;right:-20px;bottom:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.06)}
+.cta-card .ct{font-size:14px;font-weight:500;color:white}
+.cta-card .cd{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.5}
+.btn-reserve{background:white;color:#1a6b5a;border:none;border-radius:var(--border-radius-md);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;width:fit-content}
+.add-animal{border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-align:center}
+.add-animal svg{width:28px;height:28px;stroke:#0f6e56;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.add-animal .at{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.add-animal .as{font-size:12px;color:var(--color-text-secondary)}
+
+.animals-list{display:flex;flex-direction:column;gap:2px}
+.animal-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.animal-item:last-child{border-bottom:none}
+.animal-avatar{width:38px;height:38px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.animal-info{flex:1}
+.animal-info .aname{font-size:14px;font-weight:500}
+.animal-info .abreed{font-size:12px;color:var(--color-text-secondary);margin-top:1px}
+.animal-shield{width:24px;height:24px;border-radius:50%;border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center}
+.animal-shield svg{width:12px;height:12px;stroke:#0f6e56;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.notif-list{display:flex;flex-direction:column;gap:0}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.notif-item:last-child{border-bottom:none;padding-bottom:0}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.notif-dot.active{background:#0f6e56}
+.notif-dot.inactive{background:var(--color-border-secondary)}
+.notif-content .nt{font-size:13px;font-weight:500}
+.notif-content .nd{font-size:12px;color:var(--color-text-secondary);margin-top:2px;line-height:1.5}
+.notif-content .ns{font-size:11px;color:var(--color-text-tertiary);margin-top:4px}
+
+.health-card{background:#f0faf6;border:0.5px solid #9fe1cb;border-radius:var(--border-radius-lg);padding:20px}
+.health-title{font-size:13px;color:#0f6e56;margin-bottom:12px;font-weight:500}
+.health-num{font-size:32px;font-weight:500;color:#0d4035;display:flex;align-items:baseline;gap:8px}
+.health-badge{font-size:12px;color:#0f6e56;background:#9fe1cb;padding:3px 8px;border-radius:20px;font-weight:500}
+.health-sub{font-size:12px;color:#0f6e56;margin-top:6px;line-height:1.5}
+.health-bar{height:6px;border-radius:3px;background:#cef0e4;margin-top:14px;overflow:hidden}
+.health-fill{height:100%;width:94%;background:#0f6e56;border-radius:3px}
+
+.fab{position:fixed;bottom:28px;right:28px;width:44px;height:44px;background:#1a6b5a;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(26,107,90,0.3)}
+.fab svg{width:20px;height:20px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+
+<div style="display:flex;min-height:600px">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">PetCare</div>
+    <div class="sub">Pet Care Portal</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-item active">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Accueil
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Rendez-vous
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+      Prendre RDV
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Paramètres
+    </div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+      Support
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Déconnexion
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="greeting">Bonjour, Ahmed Khalil</div>
+      <div class="sub">Ravi de vous revoir ! Voici le point sur vos compagnons aujourd'hui.</div>
+    </div>
+    <div class="topbar-right">
+      <button class="bell-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      </button>
+      <button class="btn-rdv">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Prendre RDV
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="col-left">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="title">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Prochains RDV
+          </div>
+          <span class="voir-tout">Voir tout</span>
+        </div>
+
+        <div class="rdv-item">
+          <div class="rdv-icon green">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+          </div>
+          <div class="rdv-info">
+            <div class="name">Vaccination Annuelle – Luna</div>
+            <div class="doc">Dr. Sarah Mansour • Clinique Centrale</div>
+            <span class="badge confirmed">Confirmé</span>
+          </div>
+          <div class="rdv-date">
+            <div class="date">14 Octobre 2023</div>
+            <div class="time">10:30 – 11:15</div>
+          </div>
+        </div>
+
+        <div class="rdv-item">
+          <div class="rdv-icon gray">
+            <svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="8" rx="1"/><path d="M4 22V14a2 2 0 012-2h12a2 2 0 012 2v8M12 6v4"/></svg>
+          </div>
+          <div class="rdv-info">
+            <div class="name">Contrôle Post-Op – Max</div>
+            <div class="doc">Dr. Karim Zaïd • PetCare Nord</div>
+            <span class="badge pending">En attente</span>
+          </div>
+          <div class="rdv-date">
+            <div class="date">18 Octobre 2023</div>
+            <div class="time">15:00 – 15:30</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-row">
+        <div class="cta-card">
+          <div class="ct">Besoin d'aide ?</div>
+          <div class="cd">Prenez un rendez-vous en urgence en moins de 2 minutes.</div>
+          <button class="btn-reserve">Réserver maintenant</button>
+        </div>
+        <div class="add-animal">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+          <div class="at">Ajouter un animal</div>
+          <div class="as">Gérez le carnet de santé d'un nouveau compagnon.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-right">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="title">Mes Animaux</div>
+          <span style="font-size:18px;color:var(--color-text-secondary);cursor:pointer">···</span>
+        </div>
+        <div class="animals-list">
+          <div class="animal-item">
+            <div class="animal-avatar">🐕</div>
+            <div class="animal-info">
+              <div class="aname">Luna</div>
+              <div class="abreed">Golden Retriever • 2 ans</div>
+            </div>
+            <div class="animal-shield">
+              <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 8.5-7 10C8 20.5 5 16.5 5 12V7l7-4z"/></svg>
+            </div>
+          </div>
+          <div class="animal-item">
+            <div class="animal-avatar">🐈</div>
+            <div class="animal-info">
+              <div class="aname">Max</div>
+              <div class="abreed">Chat Européen • 5 ans</div>
+            </div>
+            <div class="animal-shield" style="border-color:var(--color-border-tertiary)">
+              <svg viewBox="0 0 24 24" style="stroke:var(--color-text-tertiary)"><path d="M12 3l7 4v5c0 4.5-3 8.5-7 10C8 20.5 5 16.5 5 12V7l7-4z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="margin-bottom:8px">
+          <div class="title">Notifications récentes</div>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item">
+            <div class="notif-dot active"></div>
+            <div class="notif-content">
+              <div class="nt">Rappel de vaccin</div>
+              <div class="nd">Luna doit recevoir son rappel de Rage dans 5 jours.</div>
+              <div class="ns">Il y a 2 heures</div>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot inactive"></div>
+            <div class="notif-content">
+              <div class="nt">Facture disponible</div>
+              <div class="nd">Votre facture pour la consultation de Max est prête.</div>
+              <div class="ns">Hier 18:30</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="health-card">
+        <div class="health-title">Indice de santé global</div>
+        <div class="health-num">
+          94%
+          <span class="health-badge">+2%</span>
+        </div>
+        <div class="health-sub">Basé sur les derniers check-ups de vos animaux.</div>
+        <div class="health-bar"><div class="health-fill"></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div>
+
+<button class="fab">
+  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+</button>

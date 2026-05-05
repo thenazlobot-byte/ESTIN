@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #1a6b5a;
+    --green-mid: #1e7d67;
+    --green-accent: #2a9d72;
+    --green-light: #e8f5f0;
+    --text-dark: #1a1a1a;
+    --text-muted: #666;
+    --white: #ffffff;
+    --bg: #eef5f2;
+    --footer-bg: #e4efea;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+  }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    padding: 48px 48px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .cta-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    min-height: 200px;
+  }
+
+  /* Left green panel */
+  .cta-left {
+    background: var(--green-dark);
+    padding: 44px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative paw circles */
+  .cta-left::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    bottom: -20px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+
+  .cta-left::before {
+    content: '';
+    position: absolute;
+    right: 60px;
+    bottom: 20px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .cta-deco {
+    position: absolute;
+    right: 100px;
+    bottom: -10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .cta-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .cta-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.65;
+    max-width: 400px;
+  }
+
+  .btn-cta {
+    display: inline-block;
+    background: var(--white);
+    color: var(--green-dark);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    width: fit-content;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-cta:hover {
+    background: #f0f9f5;
+    transform: translateY(-1px);
+  }
+
+  /* Right stat panel */
+  .cta-right {
+    background: #f2f7f5;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 36px 32px;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    margin-bottom: 4px;
+  }
+
+  .stat-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--green-dark);
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--green-dark);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .stat-quote {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--footer-bg);
+    margin-top: 40px;
+    padding: 52px 48px 0;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.4fr;
+    gap: 40px;
+    padding-bottom: 40px;
+  }
+
+  .footer-brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--green-accent);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .footer-brand-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-col-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 18px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--green-accent); }
+
+  .newsletter-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .newsletter-input {
+    flex: 1;
+    border: 1.5px solid #cce0d8;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .newsletter-input:focus { border-color: var(--green-accent); }
+  .newsletter-input::placeholder { color: #b0b0b0; }
+
+  .newsletter-btn {
+    width: 42px;
+    height: 42px;
+    background: var(--green-dark);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .newsletter-btn:hover { background: var(--green-mid); }
+
+  .newsletter-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Footer bottom bar */
+  .footer-bottom {
+    border-top: 1px solid #ccddd7;
+    padding: 20px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-legal a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-legal a:hover { color: var(--green-accent); }
+</style>
+</head>
+<body>
+
+<!-- ─── CTA ─── -->
+<div class="cta-section">
+  <div class="cta-card">
+    <div class="cta-left">
+      <div class="cta-deco"></div>
+      <h2 class="cta-title">Prêt à offrir le meilleur à votre animal ?</h2>
+      <p class="cta-desc">Rejoignez PetCare aujourd'hui et gérez tous les besoins de santé de vos animaux sur une seule interface sécurisée.</p>
+      <button class="btn-cta">Commencer l'aventure</button>
+    </div>
+    <div class="cta-right">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <div class="stat-number">99.9%</div>
+      <div class="stat-label">Satisfaction Client</div>
+      <p class="stat-quote">"Le meilleur système de gestion vétérinaire que nous ayons utilisé."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <div class="footer-inner">
+
+    <!-- Brand -->
+    <div>
+      <div class="footer-brand-name">PetCare</div>
+      <p class="footer-brand-desc">Votre partenaire de confiance pour le bien-être animal. Technologie et empathie au service de la vie.</p>
+    </div>
+
+    <!-- Navigation -->
+    <div>
+      <h4 class="footer-col-title">Navigation</h4>
+      <ul class="footer-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Nos Services</a></li>
+        <li><a href="#">À Propos</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Services -->
+    <div>
+      <h4 class="footer-col-title">Services</h4>
+      <ul class="footer-links">
+        <li><a href="#">Consultation Générale</a></li>
+        <li><a href="#">Urgences 24/7</a></li>
+        <li><a href="#">Vaccination</a></li>
+        <li><a href="#">Chirurgie</a></li>
+      </ul>
+    </div>
+
+    <!-- Newsletter -->
+    <div>
+      <h4 class="footer-col-title">Newsletter</h4>
+      <p class="newsletter-desc">Recevez nos conseils pour la santé de vos animaux.</p>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="Votre email">
+        <button class="newsletter-btn">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2024 PetCare Veterinary Services. Tous droits réservés.</span>
+    <div class="footer-legal">
+      <a href="#">Politique de confidentialité</a>
+      <a href="#">CGU</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
