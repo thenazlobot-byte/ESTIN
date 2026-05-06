@@ -178,21 +178,27 @@ export const BookingFlow = () => {
                   </select>
                 </div>
               </div>
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">Animal's State</label>
-                <textarea 
-                  value={petState}
-                  onChange={(e) => setPetState(e.target.value)}
-                  placeholder="Describe your animal's health state..."
-                  className="w-full h-32 px-5 py-4 bg-[#F8F9FA] border-none rounded-2xl focus:ring-2 focus:ring-[#edc315] outline-none text-[#343434] font-bold resize-none mb-4"
-                />
-                <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">Health Booklet (Optional)</label>
-                <input 
-                  type="file" 
-                  accept=".pdf,.jpg,.png"
-                  onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-                  className="w-full px-5 py-3 bg-[#F8F9FA] border-none rounded-2xl focus:ring-2 focus:ring-[#edc315] outline-none text-[#343434] font-bold text-sm"
-                />
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">Animal's State</label>
+                  <textarea
+                    value={petState}
+                    onChange={(e) => setPetState(e.target.value)}
+                    placeholder="Describe your animal's health state..."
+                    className="w-full h-32 px-5 py-4 bg-[#F8F9FA] border-none rounded-2xl focus:ring-2 focus:ring-[#edc315] outline-none text-[#343434] font-bold resize-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">Health Booklet (Optional)</label>
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.png"
+                    onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+                    className="w-full px-5 py-3 bg-[#F8F9FA] border-none rounded-2xl focus:ring-2 focus:ring-[#edc315] outline-none text-[#343434] font-bold text-sm"
+                  />
+                </div>
               </div>
+            </div>
             </div>
 
             <div className="mt-10 p-6 bg-[#5380c105] border border-[#5380c110] rounded-2xl">
