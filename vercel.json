@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "installCommand": "cd pawflow-frontend && npm install",
   "buildCommand": "cd pawflow-frontend && npm run build",
   "outputDirectory": "pawflow-frontend/dist",
   "cleanUrls": true,
