@@ -6,7 +6,7 @@ import DashboardLayout from '../components/DashboardLayout';
 
 export const SettingsPage = () => {
   const navigate = useNavigate();
-  const { user, logout, setUser } = useAuthStore();
+  const { user, logout, updateUser } = useAuthStore();
   const [formData, setFormData] = useState({
     full_name: user?.full_name || '',
     phone: user?.phone || '',
@@ -25,7 +25,7 @@ export const SettingsPage = () => {
     setMessage({ type: '', text: '' });
     try {
       const response = await apiService.updateProfile(formData);
-      setUser({ ...user!, ...formData });
+      updateUser(formData);
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
     } catch (err: any) {
       setMessage({ type: 'error', text: err.response?.data?.error || 'Failed to update profile' });
