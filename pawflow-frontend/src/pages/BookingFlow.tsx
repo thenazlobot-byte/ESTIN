@@ -199,7 +199,6 @@ export const BookingFlow = () => {
                 </div>
               </div>
             </div>
-            </div>
 
             <div className="mt-10 p-6 bg-[#5380c105] border border-[#5380c110] rounded-2xl">
               <h3 className="font-bold text-[#5380c1] mb-4 text-lg">Booking Summary</h3>
